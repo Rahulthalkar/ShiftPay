@@ -1,0 +1,57 @@
+:host {
+  display: contents;
+}
+
+/* Sidebar Nav Link Styles */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  /* space-x-3 */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-radius: 0.75rem;
+  /* rounded-xl */
+  font-weight: 500;
+  color: #64748b;
+  /* text-slate-500 */
+  transition-property: all;
+  transition-duration: 300ms;
+}
+
+.dark .nav-link {
+  color: #94a3b8;
+  /* text-slate-400 */
+}
+
+.nav-link:hover {
+  background-color: #f1f5f9;
+  /* hover:bg-slate-100 */
+}
+
+.dark .nav-link:hover {
+  background-color: #1e293b;
+  /* dark:hover:bg-slate-800 */
+}
+
+/* Active Link State */
+.nav-link.active {
+  background-color: #eef2ff;
+  /* bg-indigo-50 */
+  color: #4f46e5;
+  /* text-indigo-600 */
+  font-weight: 600;
+}
+
+.dark .nav-link.active {
+  background-color: rgba(79, 70, 229, 0.1);
+  /* dark:bg-indigo-900/10 */
+  color: #818cf8;
+  /* dark:text-indigo-400 */
+}
+
+.nav-link.active svg {
+  stroke-width: 2.5px;
+}

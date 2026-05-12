@@ -1,0 +1,294 @@
+<div class="max-w-7xl mx-auto space-y-10 animate-in fade-in duration-700">
+
+    <!-- Hero Header -->
+    <div class="relative bg-slate-900 rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 overflow-hidden group shadow-2xl">
+        <!-- Abstract Background Circles -->
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute right-40 bottom-0 w-60 h-60 bg-emerald-500/5 rounded-full blur-3xl"></div>
+
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
+            <div class="space-y-6">
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    {{currentDate}}
+                </div>
+                <div class="space-y-2">
+                    <h1 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight md:leading-none">
+                        Welcome,<br>
+                        <span class="text-emerald-400 drop-shadow-sm lowercase">{{workerName}}</span>
+                    </h1>
+                    <p class="text-slate-400 text-xs md:text-sm font-medium">Your attendance and salary dashboard.</p>
+                </div>
+                <div
+                    class="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 rounded-full border border-emerald-500/20 text-[10px] font-black text-emerald-400 uppercase tracking-widest">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                        class="mr-1">
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                        <path d="m9 12 2 2 4-4" />
+                    </svg>
+                    STATUS: ACTIVE
+                </div>
+            </div>
+
+            <div class="space-y-6 w-full md:w-auto">
+                <div
+                    class="bg-white/5 backdrop-blur-xl p-8 rounded-md border border-white/10 shadow-2xl text-center md:text-left min-w-[240px]">
+                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">My Daily Rate</p>
+                    <div class="flex items-baseline gap-1 justify-center md:justify-start">
+                        <span class="text-4xl font-black text-white">₹{{dailyRate}}</span>
+                        <span class="text-slate-500 text-xs font-bold">/Day</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-col md:flex-row gap-6 items-center">
+        <div class="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-md gap-1">
+            <button
+                class="px-6 py-2.5 bg-slate-900 dark:bg-indigo-600 text-white rounded-md text-xs font-bold shadow-lg">This
+                Month</button>
+            <button
+                class="px-6 py-2.5 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded-md text-xs font-bold transition-all">Year
+                to Date (Apr - Mar)</button>
+        </div>
+
+
+    </div>
+    <div class="flex-1 flex flex-col md:flex-row gap-4 w-full">
+        <div class="grid grid-cols-2 gap-4 flex-1">
+            <div class="space-y-2">
+                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-2">Start
+                    Date</label>
+                <input type="date" [(ngModel)]="startDate"
+                    class="w-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-md px-5 py-3 text-sm font-bold text-slate-700 dark:text-slate-300">
+            </div>
+            <div class="space-y-2">
+                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-2">End Date</label>
+                <input type="date" [(ngModel)]="endDate"
+                    class="w-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-md px-5 py-3 text-sm font-bold text-slate-700 dark:text-slate-300">
+            </div>
+        </div>
+        <button (click)="onFilter()"
+            class="md:self-end px-12 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm font-black uppercase tracking-widest shadow-xl shadow-indigo-200 dark:shadow-none transition-all active:scale-95">
+            Filter
+        </button>
+    </div>
+    <!-- Attendance Summary Grid -->
+    <div class="space-y-6">
+        <div class="flex items-center gap-4">
+            <h2 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Attendance Summary</h2>
+            <div class="h-px flex-1 bg-slate-100 dark:bg-slate-800"></div>
+        </div>
+        <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Detailed breakdown of your shifts and
+            earnings.</p>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div *ngFor="let stat of [
+                { label: 'Days Worked', val: stats.daysWorked, icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', color: 'text-blue-500 bg-blue-50 dark:bg-blue-500/10' },
+                { label: 'Half Days', val: stats.halfDays, icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' },
+                { label: 'Second Half', val: stats.secondHalf, icon: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z', color: 'text-orange-500 bg-orange-50 dark:bg-orange-500/10' },
+                { label: 'Full Night', val: stats.fullNight, icon: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z', color: 'text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10' },
+                { label: 'Half Night', val: stats.halfNight, icon: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z', color: 'text-slate-600 bg-slate-50 dark:bg-slate-500/10' },
+                { label: 'Double Night', val: stats.doubleNight, icon: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z', color: 'text-fuchsia-500 bg-fuchsia-50 dark:bg-fuchsia-500/10' },
+                { label: 'Total Salary', val: '₹' + stats.totalSalary, icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10' },
+                { label: 'Balance', val: '₹' + stats.balance, icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', color: 'text-cyan-500 bg-cyan-50 dark:bg-cyan-500/10' }
+            ]"
+                class="bg-white dark:bg-slate-900 p-6 rounded-md border border-slate-50 dark:border-slate-800 shadow-sm space-y-4 hover:border-indigo-500/20 transition-all group">
+                <div [class]="stat.color"
+                    class="w-10 h-10 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path [attr.d]="stat.icon" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{{stat.label}}</p>
+                    <p class="text-xl font-black text-slate-800 dark:text-white">{{stat.val}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Progress Bars -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 py-10">
+        <div *ngFor="let sum of [
+            { label: 'Total Shifts', val: stats.totalShifts, unit: 'SHIFTS', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', color: 'bg-blue-400', valDisplay: stats.totalShifts },
+            { label: 'Salary Earned', val: stats.salaryEarned, unit: '₹', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2', color: 'bg-emerald-400', valDisplay: '₹' + stats.salaryEarned },
+            { label: 'Advances Taken', val: stats.advancesTaken, unit: '₹', icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z', color: 'bg-amber-400', valDisplay: '₹' + stats.advancesTaken },
+            { label: 'Days Worked', val: stats.workingDays, unit: 'DAYS', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', color: 'bg-indigo-400', valDisplay: stats.workingDays }
+        ]" class="space-y-4 p-3 bg-white dark:bg-slate-900 rounded-md border border-slate-50 dark:border-slate-800">
+            <div class="flex items-center justify-between">
+                <div class="p-2.5 rounded-md bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path [attr.d]="sum.icon" />
+                    </svg>
+                </div>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{sum.label}}</p>
+                <p class="text-3xl font-black text-slate-800 dark:text-white">{{sum.valDisplay}} <span
+                        class="text-[10px] text-slate-400 ml-1">{{sum.unit}}</span></p>
+            </div>
+            <div class="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-md overflow-hidden">
+                <div [class]="sum.color" class="h-full w-[2%] rounded-md shadow-lg transition-all duration-1000">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Shifts and Advances -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <!-- Recent Shifts -->
+        <div
+            class="space-y-8 bg-white dark:bg-slate-900 p-10 rounded-md border border-slate-50 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Recent Shifts</h3>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Your latest 5 shift
+                        records.</p>
+                </div>
+                <button
+                    class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-indigo-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">
+                    <span>Date & Shift</span>
+                    <span class="text-right">Salary</span>
+                </div>
+                <div *ngIf="recentShifts.length === 0" class="py-20 text-center space-y-4">
+                    <div
+                        class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full mx-auto flex items-center justify-center text-slate-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v20" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                    </div>
+                    <p class="text-slate-400 text-sm font-bold uppercase tracking-widest">No shifts recorded</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Advances -->
+        <div
+            class="space-y-8 bg-white dark:bg-slate-900 p-10 rounded-md border border-slate-50 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">My Advances</h3>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Recent advance
+                        payments received.</p>
+                </div>
+                <button
+                    class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-indigo-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">
+                    <span>Date & Reason</span>
+                    <span class="text-right">Amount</span>
+                </div>
+                <div *ngIf="recentAdvances.length === 0" class="py-20 text-center space-y-4">
+                    <div
+                        class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full mx-auto flex items-center justify-center text-slate-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v20" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                    </div>
+                    <p class="text-slate-400 text-sm font-bold uppercase tracking-widest">No advances taken</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendar: Operational Lifecycle -->
+    <div
+        class="bg-white dark:bg-slate-900 rounded-md border border-slate-50 dark:border-slate-800 shadow-sm p-12 space-y-10">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="w-1.5 h-8 bg-indigo-600 rounded-full"></div>
+                <div>
+                    <h3 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight leading-none">
+                        Operational Lifecycle</h3>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">April 2024 Registry
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <select
+                    class="bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300">
+                    <option>APRIL</option>
+                </select>
+                <select
+                    class="bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300">
+                    <option>2024</option>
+                </select>
+                <button class="p-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                        <path d="M21 3v5h-5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-7 gap-1 md:gap-4">
+            <div *ngFor="let day of ['S', 'M', 'T', 'W', 'T', 'F', 'S']"
+                class="text-center text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+                {{day}}
+            </div>
+            <div *ngFor="let item of calendarDays" [class.invisible]="!item.day" [class.bg-indigo-50]="item.current"
+                [class.dark:bg-indigo-900/20]="item.current" [class.border-indigo-600]="item.current"
+                class="aspect-square rounded md:rounded-lg border border-slate-50 dark:border-slate-800 flex items-center justify-center text-[10px] md:text-sm font-black text-slate-700 dark:text-slate-400 transition-all hover:border-indigo-500/30 cursor-pointer">
+                {{item.day}}
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div
+            class="flex flex-wrap items-center justify-between gap-8 pt-10 border-t border-slate-50 dark:border-slate-800">
+            <div class="flex flex-wrap gap-6">
+                <div *ngFor="let leg of [
+                    { label: 'Full Day', color: 'bg-blue-400' },
+                    { label: 'Half Day', color: 'bg-amber-400' },
+                    { label: 'Second Half', color: 'bg-orange-400' },
+                    { label: 'Half Night', color: 'bg-slate-400' },
+                    { label: 'Full Night', color: 'bg-indigo-400' },
+                    { label: 'Double Night', color: 'bg-fuchsia-400' }
+                ]" class="flex items-center gap-2">
+                    <span [class]="leg.color" class="w-2 h-2 rounded-full"></span>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{leg.label}}</span>
+                </div>
+            </div>
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl text-[9px] font-black text-emerald-600 uppercase tracking-widest border border-emerald-100 dark:border-emerald-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Statistics Live Update Start
+            </div>
+        </div>
+    </div>
+
+</div>

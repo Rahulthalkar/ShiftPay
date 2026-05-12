@@ -1,0 +1,208 @@
+<div class="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
+    <!-- Header -->
+    <div class="space-y-2">
+        <h2 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Create Identity</h2>
+        <p class="text-base text-slate-500 dark:text-slate-400 font-medium">Provision a new user account with system
+            access privileges.</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white dark:bg-slate-900 rounded-md border border-slate-100 dark:border-slate-800 shadow-sm p-10">
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-10">
+
+            <!-- Section 1: Security & Identity -->
+            <div class="space-y-6">
+                <div class="flex items-center gap-3 pb-2 border-b border-slate-50 dark:border-slate-800">
+                    <div
+                        class="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-black uppercase tracking-widest text-slate-400 dark:text-indigo-400">
+                        Security
+                        Credentials</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <label
+                            class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Username</label>
+                        <input type="text" formControlName="username" placeholder="unique_id"
+                            class="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-md text-sm focus:ring-2 focus:ring-indigo-500 dark:text-white transition-all outline-none">
+                        <p *ngIf="userForm.get('username')?.touched && userForm.get('username')?.invalid"
+                            class="text-[11px] text-red-500 font-bold ml-1 italic">Min 4 characters required</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label
+                            class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Password</label>
+                        <input type="password" formControlName="password" placeholder="••••••••"
+                            class="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-md text-sm focus:ring-2 focus:ring-indigo-500 dark:text-white transition-all outline-none">
+                        <p *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid"
+                            class="text-[11px] text-red-500 font-bold ml-1 italic">Min 6 characters required</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Personal Details -->
+            <div class="space-y-6">
+                <div class="flex items-center gap-3 pb-2 border-b border-slate-50 dark:border-slate-800">
+                    <div
+                        class="w-8 h-8 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-md flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Personal
+                        Details</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Full
+                            Name</label>
+                        <input type="text" formControlName="name" placeholder="John Doe"
+                            class="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-md text-sm focus:ring-2 focus:ring-indigo-500 dark:text-white transition-all outline-none">
+                        <p *ngIf="userForm.get('name')?.touched && userForm.get('name')?.invalid"
+                            class="text-[11px] text-red-500 font-bold ml-1 italic">Full name is required</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Phone
+                            Number</label>
+                        <input type="tel" formControlName="phone" placeholder="10-digit mobile"
+                            class="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-md text-sm focus:ring-2 focus:ring-indigo-500 dark:text-white transition-all outline-none">
+                        <p *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid"
+                            class="text-[11px] text-red-500 font-bold ml-1 italic">Valid 10-digit phone required</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Professional Setup -->
+            <div class="space-y-6">
+                <div class="flex items-center gap-3 pb-2 border-b border-slate-50 dark:border-slate-800">
+                    <div
+                        class="w-8 h-8 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="14" x="2" y="5" rx="2" />
+                            <line x1="2" x2="22" y1="10" y2="10" />
+                            <path d="M7 15h.01" />
+                            <path d="M11 15h.01" />
+                            <path d="M15 15h.01" />
+                            <path d="M7 11h.01" />
+                            <path d="M11 11h.01" />
+                            <path d="M15 11h.01" />
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                        Professional Setup</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">System
+                            Role</label>
+                        <select formControlName="role"
+                            class="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-md text-sm focus:ring-2 focus:ring-indigo-500 dark:text-white transition-all outline-none appearance-none">
+                            <option *ngFor="let role of roles" [value]="role">{{role}}</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Reporting
+                            Manager</label>
+                        <select formControlName="manager"
+                            class="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-md text-sm focus:ring-2 focus:ring-indigo-500 dark:text-white transition-all outline-none appearance-none">
+                            <option value="">None</option>
+                            <option *ngFor="let mgr of managers" [value]="mgr">{{mgr}}</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Daily Rate
+                            (₹)</label>
+                        <input type="number" formControlName="dailyRate" placeholder="1000"
+                            class="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-md text-sm focus:ring-2 focus:ring-indigo-500 dark:text-white transition-all outline-none">
+                        <p *ngIf="userForm.get('dailyRate')?.touched && userForm.get('dailyRate')?.invalid"
+                            class="text-[11px] text-red-500 font-bold ml-1 italic">Daily Rate is required</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Profile Image Upload -->
+            <div class="space-y-6">
+                <div class="flex items-center gap-3 pb-2 border-b border-slate-50 dark:border-slate-800">
+                    <div
+                        class="w-8 h-8 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-md flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" x2="12" y1="3" y2="15" />
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Profile
+                        Image</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-8">
+                    <div
+                        class="flex flex-col md:flex-row items-center gap-8 bg-slate-50 dark:bg-slate-800/40 p-8 rounded-md border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all group">
+
+                        <!-- Preview container -->
+                        <div
+                            class="w-32 h-32 rounded-md bg-white dark:bg-slate-900 shadow-xl overflow-hidden flex-shrink-0 border-4 border-white dark:border-slate-800">
+                            <img *ngIf="imagePreview" [src]="imagePreview" class="w-full h-full object-cover">
+                            <div *ngIf="!imagePreview"
+                                class="w-full h-full flex items-center justify-center text-slate-300 dark:text-slate-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Upload controls -->
+                        <div class="space-y-4 text-center md:text-left flex-1">
+                            <div>
+                                <h4 class="text-sm font-black text-slate-800 dark:text-white">Upload Profile Photo</h4>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Recommended: Square image,
+                                    max 2MB. Support for JPG, PNG.</p>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-3 justify-center md:justify-start">
+                                <label for="file-upload"
+                                    class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all cursor-pointer shadow-lg shadow-indigo-100 dark:shadow-none active:scale-95">
+                                    Choose File
+                                </label>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                                    {{selectedFile ? selectedFile.name : 'No file chosen'}}
+                                </span>
+                                <input id="file-upload" type="file" (change)="onFileSelected($event)" accept="image/*"
+                                    class="hidden">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="pt-8 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between gap-6">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">Ensure all
+                    parameters are verified before provisioning account.</p>
+                <div class="flex gap-4">
+                    <button type="button"
+                        class="px-4 py-4 border-1 border-slate-400 rounded-md text-slate-500 dark:text-slate-400 text-sm font-black uppercase tracking-widest hover:text-slate-900 dark:hover:text-white transition-all">Cancel</button>
+                    <button type="submit" [disabled]="userForm.invalid"
+                        class="px-4 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm font-black uppercase tracking-widest shadow-xl hover:shadow-indigo-200 dark:hover:shadow-none transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed active:scale-95">
+                        Create Account
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

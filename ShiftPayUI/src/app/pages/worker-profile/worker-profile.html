@@ -1,0 +1,249 @@
+<div class="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
+
+    <!-- Header Section -->
+    <div class="space-y-1">
+        <h2 class="text-3xl font-black tracking-tight text-slate-800 dark:text-white">Worker Profile</h2>
+        <p class="text-base text-slate-500 dark:text-slate-400 font-medium">Manage your professional identity and
+            security settings.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Section: Personal Info Card -->
+        <div
+            class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-md border border-slate-100 dark:border-slate-800 shadow-sm p-10">
+            <div class="flex items-center justify-between mb-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-indigo-600"></div>
+                    <h3 class="text-xl font-extrabold text-slate-800 dark:text-white">Personal Information</h3>
+                </div>
+                <span
+                    class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-[10px] font-black text-slate-500 dark:text-slate-400 rounded uppercase tracking-widest">Editable</span>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-12">
+                <!-- Avatar Column -->
+                <div class="flex flex-col items-center gap-4">
+                    <div class="relative w-40 h-40 group">
+                        <div
+                            class="w-full h-full rounded-2xl overflow-hidden border-4 border-slate-50 dark:border-slate-800 shadow-xl">
+                            <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=200&h=200"
+                                alt="Profile" class="w-full h-full object-cover">
+                        </div>
+                        <button
+                            class="absolute -bottom-2 -right-2 w-10 h-10 bg-indigo-600 text-white rounded-lg flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                                <circle cx="12" cy="13" r="3" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-[10px] font-bold text-slate-400 text-center leading-relaxed">JPG, PNG or GIF.<br>Max
+                        5MB.</p>
+                </div>
+
+                <!-- Form Column -->
+                <form [formGroup]="profileForm" class="flex-1 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full
+                                Name</label>
+                            <input type="text" formControlName="name"
+                                class="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-md text-sm font-black text-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Employee
+                                ID</label>
+                            <input type="text" formControlName="employeeId" readonly
+                                class="w-full px-5 py-3.5 bg-slate-100 dark:bg-slate-800/60 border-none rounded-md text-sm font-bold text-slate-400 dark:text-slate-500 cursor-not-allowed outline-none">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email
+                            Address</label>
+                        <input type="email" formControlName="email"
+                            class="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-md text-sm font-black text-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Phone
+                            Number</label>
+                        <input type="tel" formControlName="phone"
+                            class="w-full px-5 py-3.5 bg-slate-50 dark:bg-slate-800 border-none rounded-md text-sm font-black text-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+                    </div>
+
+                    <div class="pt-4 flex gap-4">
+                        <button type="submit"
+                            class="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-100 dark:shadow-none transition-all active:scale-95">Update
+                            Profile</button>
+                        <button type="button"
+                            class="px-8 py-3.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-md text-xs font-black uppercase tracking-widest hover:opacity-80 transition-all">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Side: Security & Assignemt Cards -->
+        <div class="space-y-8">
+            <!-- Account Security -->
+            <div
+                class="bg-white dark:bg-slate-900 rounded-md border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden border-l-4 border-l-indigo-600">
+                <div class="p-8 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-sm font-black uppercase tracking-widest text-slate-800 dark:text-white">Account
+                            Security</h3>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Last Password Change
+                        </p>
+                        <p class="text-sm font-black text-slate-700 dark:text-slate-300">{{user.lastPasswordChange}}</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <button
+                            class="w-full p-4 bg-slate-50 dark:bg-slate-800/40 rounded-md flex items-center justify-between group hover:bg-slate-100 transition-all">
+                            <div class="text-left" routerLink="/settings">
+                                <p class="text-xs font-black text-slate-800 dark:text-white">Change Password</p>
+                                <p class="text-[10px] font-bold text-slate-400 mt-0.5">Update your login credentials</p>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="text-slate-300 group-hover:text-indigo-600 transition-colors">
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </button>
+
+                        <button
+                            class="w-full p-4 bg-slate-50 dark:bg-slate-800/40 rounded-md flex items-center justify-between group hover:bg-slate-100 transition-all">
+                            <div class="text-left">
+                                <p class="text-xs font-black text-slate-800 dark:text-white">Two-Factor Auth</p>
+                                <p class="text-[10px] font-bold text-red-500 mt-0.5">Currently Disabled</p>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="text-slate-300 group-hover:text-indigo-600 transition-colors">
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Assignment -->
+            <div class="bg-indigo-50 dark:bg-indigo-900/10 rounded-md p-8 space-y-6 relative overflow-hidden group">
+                <div class="relative z-10 space-y-6">
+                    <div class="space-y-1">
+                        <p
+                            class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
+                            Current Assignment</p>
+                        <h4 class="text-2xl font-black text-slate-900 dark:text-white leading-tight">{{user.role}}</h4>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <span
+                            class="px-2.5 py-1 bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 text-[10px] font-black rounded uppercase tracking-tighter border border-indigo-100 dark:border-slate-700 shadow-sm">Full
+                            Night Shift</span>
+                        <span
+                            class="px-2.5 py-1 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-black rounded uppercase tracking-tighter shadow-sm">Region
+                            A4</span>
+                    </div>
+
+                    <div class="flex items-end justify-between pt-4 border-t border-indigo-100 dark:border-slate-800">
+                        <div class="space-y-1">
+                            <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Current Month
+                                Earnings</p>
+                            <p class="text-2xl font-black text-slate-900 dark:text-white">{{user.earnings}} <span
+                                    class="text-xs font-bold opacity-40">USD</span></p>
+                        </div>
+                        <div
+                            class="w-10 h-8 bg-white dark:bg-slate-800 rounded flex items-center justify-center text-indigo-600 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="m19 20-4-4-4 4" />
+                                <path d="m19 12-4-4-4 4" />
+                                <path d="m19 4-4-4-4 4" />
+                                <path d="M3 3v18h18" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mini pattern -->
+                <div class="absolute right-0 top-0 w-16 h-16 bg-indigo-600/5 rounded-bl-[4rem]"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Section: Professional Credentials -->
+    <div
+        class="bg-slate-50 dark:bg-slate-900/50 rounded-md border border-slate-100 dark:border-slate-800 p-10 space-y-8">
+        <div class="flex items-center gap-3">
+            <div
+                class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center text-slate-800 dark:text-slate-400 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z" />
+                    <path d="M3 9V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-800 dark:text-white">Professional Credentials</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div *ngFor="let cred of credentials"
+                class="bg-white dark:bg-slate-900 p-8 rounded-md border border-slate-100 dark:border-slate-800 shadow-sm space-y-6 hover:-translate-y-1 transition-transform">
+                <div
+                    class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                    <ng-container [ngSwitch]="cred.icon">
+                        <svg *ngSwitchCase="'shield-check'" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            <path d="m9 12 2 2 4-4" />
+                        </svg>
+                        <svg *ngSwitchCase="'key'" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4" />
+                            <path d="m21 2-9.6 9.6" />
+                            <circle cx="7.5" cy="15.5" r="5.5" />
+                        </svg>
+                        <svg *ngSwitchCase="'file-text'" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                            <line x1="10" y1="9" x2="8" y2="9" />
+                        </svg>
+                    </ng-container>
+                </div>
+
+                <div class="space-y-1">
+                    <h4 class="text-sm font-black text-slate-800 dark:text-white">{{cred.title}}</h4>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{cred.info}}</p>
+                </div>
+
+                <button
+                    class="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:opacity-80 transition-all border-b-2 border-indigo-100 dark:border-indigo-900 inline-block pb-0.5">
+                    {{cred.linkText}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

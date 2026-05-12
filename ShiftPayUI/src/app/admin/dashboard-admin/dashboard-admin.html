@@ -1,0 +1,273 @@
+<!-- Page Body -->
+<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+    <!-- Breadcrumbs & Title -->
+    <div class="space-y-4">
+        <nav
+            class="flex items-center gap-2 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+            <span class="hover:text-indigo-500 cursor-pointer transition-colors">Admin</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m9 18 6-6-6-6" />
+            </svg>
+            <span class="text-slate-600 dark:text-slate-300">System Overview</span>
+        </nav>
+
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Executive Dashboard
+                </h2>
+                <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Real-time management
+                    for Precision Ledger ecosystems.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div *ngFor="let stat of stats; let i = index"
+            class="group p-7 rounded-md border transition-all duration-500 hover:-translate-y-2 relative overflow-hidden"
+            [ngClass]="i === 1 
+        ? 'bg-indigo-600 text-white shadow-2xl shadow-indigo-200 dark:shadow-none border-none' 
+        : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500/50 hover:shadow-xl hover:shadow-slate-200/40 dark:hover:shadow-none text-slate-900 dark:text-white'">
+
+            <div class="relative z-10 flex flex-col h-full">
+                <div class="flex items-center justify-between mb-10">
+                    <div [class]="stat.color"
+                        class="w-14 h-14 rounded-2xl flex items-center justify-center p-3.5 transition-transform group-hover:scale-110 duration-500">
+                        <ng-container [ngSwitch]="stat.icon">
+                            <svg *ngSwitchCase="'users'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                            <svg *ngSwitchCase="'credit-card'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect width="20" height="14" x="2" y="5" rx="2" />
+                                <line x1="2" x2="22" y1="10" y2="10" />
+                            </svg>
+                            <svg *ngSwitchCase="'shield-check'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                <path d="m9 12 2 2 4-4" />
+                            </svg>
+                            <svg *ngSwitchCase="'clipboard-list'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                                <path d="M12 11h4" />
+                                <path d="M12 16h4" />
+                                <path d="M8 11h.01" />
+                                <path d="M8 16h.01" />
+                            </svg>
+                        </ng-container>
+                    </div>
+                    <span *ngIf="stat.trend"
+                        class="text-[11px] font-black bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-3 py-1 rounded-full uppercase tracking-tighter">
+                        {{stat.trend}}
+                    </span>
+                    <span *ngIf="stat.label.includes('PENDING')"
+                        class="w-3 h-3 bg-red-500 rounded-full animate-pulse shadow-lg shadow-red-500/50"></span>
+                </div>
+
+                <div class="mt-auto">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] mb-2"
+                        [ngClass]="i === 1 ? 'text-indigo-100' : 'text-slate-400 dark:text-slate-500'">{{stat.label}}
+                    </p>
+                    <p class="text-4xl font-black tracking-tight">{{stat.value}}</p>
+                </div>
+            </div>
+
+            <!-- Accent elements for standard cards -->
+            <div *ngIf="i !== 1"
+                class="absolute -right-4 -bottom-4 w-24 h-24 bg-slate-50 dark:bg-slate-800/20 rounded-full pointer-events-none group-hover:scale-150 transition-transform duration-700">
+            </div>
+
+            <!-- Background Decoration for primary card -->
+            <div *ngIf="i === 1"
+                class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-3xl pointer-events-none">
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Grid Area -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Recent Activity Table -->
+        <div
+            class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-md border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
+            <div
+                class="px-6 md:px-8 py-9 border-b border-slate-50 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-slate-800 dark:text-white">Recent User Activity</h3>
+                    <p class="text-xs md:text-sm text-slate-400 dark:text-slate-500 mt-1.5 font-medium">Monitoring system-wide
+                        log-ins and configuration changes.</p>
+                </div>
+                <button
+                    class="text-indigo-600 dark:text-indigo-400 text-sm font-black flex items-center gap-2 hover:gap-3 transition-all duration-300">
+                    View Full Logs
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14" />
+                        <path d="m12 5 7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-slate-50/50 dark:bg-slate-800/40">
+                            <th
+                                class="px-8 py-5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                                User</th>
+                            <th
+                                class="px-6 py-5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                                Action</th>
+                            <th
+                                class="px-6 py-5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                                Target Entity</th>
+                            <th
+                                class="px-6 py-5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">
+                                Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50 dark:divide-slate-800/60">
+                        <tr *ngFor="let activity of activities"
+                            class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-all duration-300">
+                            <td class="px-8 py-2">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 md:w-11 md:h-11 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] md:text-xs font-black text-slate-500 dark:text-slate-400 shrink-0 border border-transparent dark:border-slate-700 transition-colors group-hover:border-indigo-200 dark:group-hover:border-indigo-900">
+                                        {{activity.user.initial}}
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-black text-slate-800 dark:text-white">
+                                            {{activity.user.name}}</p>
+                                        <p
+                                            class="text-[11px] font-bold text-slate-400 dark:text-slate-500 mt-0.5 uppercase tracking-tighter">
+                                            {{activity.user.role}}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-6 font-bold text-sm text-slate-700 dark:text-slate-300">
+                                {{activity.action}}</td>
+                            <td class="px-6 py-6">
+                                <span
+                                    class="px-3.5 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl text-[11px] font-black uppercase tracking-tight">
+                                    {{activity.entity}}
+                                </span>
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all duration-300"
+                                    [ngClass]="{
+                    'text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 border-emerald-100 dark:border-emerald-500/20': activity.status === 'SUCCESS',
+                    'text-orange-500 bg-orange-50 dark:bg-orange-500/10 border-orange-100 dark:border-orange-500/20': activity.status === 'PROCESSING',
+                    'text-red-500 bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20': activity.status === 'FLAGGED'
+                  }">
+                                    <span class="w-2 h-2 rounded-full bg-current"
+                                        [class.animate-pulse]="activity.status === 'PROCESSING'"></span>
+                                    {{activity.status}}
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div
+                class="px-8 py-6 bg-slate-50/50 dark:bg-slate-800/40 border-t border-slate-100 dark:border-slate-800 mt-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]">Showing
+                    4 of 280 system events</p>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:border-indigo-500 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all disabled:opacity-50 shadow-sm">Previous</button>
+                    <button
+                        class="px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:border-indigo-500 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all shadow-sm">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-8">
+            <!-- System Health -->
+            <div
+                class="bg-white dark:bg-slate-900 p-9 rounded-md border border-slate-100 dark:border-slate-800 shadow-sm space-y-10">
+                <h3 class="text-xl font-extrabold text-slate-800 dark:text-white">System Health Monitor</h3>
+
+                <div class="space-y-8">
+                    <div class="space-y-4">
+                        <div class="flex justify-between text-[11px] font-black uppercase tracking-widest">
+                            <span class="text-slate-400 dark:text-slate-500">Database Uptime</span>
+                            <span class="text-indigo-600 dark:text-indigo-400">99.9%</span>
+                        </div>
+                        <div class="h-2.5 bg-slate-100 dark:bg-slate-800/80 rounded-full overflow-hidden shadow-inner">
+                            <div
+                                class="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full w-[99.9%] shadow-lg shadow-indigo-200 dark:shadow-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between text-[11px] font-black uppercase tracking-widest">
+                            <span class="text-slate-400 dark:text-slate-500">API Latency</span>
+                            <span class="text-indigo-600 dark:text-indigo-400">12ms</span>
+                        </div>
+                        <div class="h-2.5 bg-slate-100 dark:bg-slate-800/80 rounded-full overflow-hidden shadow-inner">
+                            <div class="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full w-[15%]"></div>
+                        </div>
+                        <div class="flex gap-1.5 pt-2">
+                            <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]"
+                                class="h-6 flex-1 bg-slate-50 dark:bg-slate-800/40 rounded-md border border-transparent dark:border-slate-800 transition-all duration-300"
+                                [ngClass]="i < 4 ? 'bg-indigo-600/20 border-indigo-200 dark:border-indigo-900' : ''">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promotion Card -->
+            <div
+                class="bg-indigo-600 rounded-md p-10 text-white relative overflow-hidden shadow-3xl shadow-indigo-200/50 dark:shadow-none group cursor-pointer">
+                <div
+                    class="absolute top-0 right-0 p-8 opacity-20 group-hover:scale-125 transition-transform duration-700 ease-out">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                    </svg>
+                </div>
+
+                <div class="relative z-10 space-y-8">
+                    <div class="space-y-4">
+                        <h4 class="text-2xl font-black leading-tight tracking-tight">Automated Payroll is Active</h4>
+                        <p class="text-indigo-100/90 text-sm font-bold leading-relaxed">
+                            System is scheduled to process end-of-month disbursements in 4 days.
+                        </p>
+                    </div>
+
+                    <button
+                        class="w-full bg-white text-indigo-600 py-4.5 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[10px] hover:bg-slate-50 transition-all duration-300 shadow-xl active:scale-95">
+                        Review Schedule
+                    </button>
+                </div>
+
+                <!-- Decoration Orbs -->
+                <div
+                    class="absolute -left-12 -bottom-12 w-48 h-48 bg-white/10 rounded-full blur-3xl pointer-events-none group-hover:bg-white/20 transition-colors duration-700">
+                </div>
+                <div
+                    class="absolute left-1/2 top-0 w-24 h-24 bg-indigo-400/20 rounded-full blur-2xl pointer-events-none">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

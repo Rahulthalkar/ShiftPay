@@ -1,0 +1,71 @@
+:host {
+    display: block;
+}
+
+/* Custom shadow for premium feel */
+.shadow-3xl {
+    box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Specific status pulse for pending */
+.status-pending {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .7;
+    }
+}
+
+/* Table row hover elevation */
+tbody tr {
+    transition: all 0.2s ease-in-out;
+}
+
+tbody tr:hover {
+    transform: scale(1.002);
+    z-index: 10;
+    position: relative;
+}
+
+/* Scrollbar styling */
+.overflow-x-auto::-webkit-scrollbar {
+    height: 6px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.dark .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #1e293b;
+}
