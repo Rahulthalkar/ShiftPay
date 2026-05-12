@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="ShiftPay.API/ShiftPay.API.csproj" />
+  <Project Path="ShiftPay.BAL/ShiftPay.BAL.csproj" />
+  <Project Path="ShiftPay.DAL/ShiftPay.DAL.csproj" />
+  <Project Path="ShiftPay.DB/ShiftPay.DB.csproj" />
+  <Project Path="ShiftPay.Domain/ShiftPay.Domain.csproj" />
+</Solution>

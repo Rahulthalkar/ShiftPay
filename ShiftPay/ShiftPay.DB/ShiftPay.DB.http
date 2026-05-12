@@ -1,0 +1,6 @@
+@ShiftPay.DB_HostAddress = http://localhost:5213
+
+GET {{ShiftPay.DB_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
