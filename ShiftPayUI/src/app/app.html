@@ -1,11 +1,12 @@
 <div [class.dark]="isDarkMode" class="min-h-screen font-sans transition-colors duration-300">
   <!-- Auth Layout -->
-  <ng-container *ngIf="isAuthRoute">
+  @if(isAuthRoute){
     <router-outlet></router-outlet>
-  </ng-container>
+  }
 
   <!-- Main App Layout -->
-  <div *ngIf="!isAuthRoute" class="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
+  @if(!isAuthRoute){
+    <div class="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
 
     <!-- Sidebar -->
     <app-sidebar [isOpen]="isSidebarOpen" (closeSidebar)="toggleSidebar()"></app-sidebar>
@@ -24,5 +25,5 @@
       </div>
 
     </div>
-  </div>
+  </div>}
 </div>
