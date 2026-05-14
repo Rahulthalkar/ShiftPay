@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ShiftPay.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4372fb08c39c88ec92a2a07c8128681ae13baf16")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43cdd7eaac8681ffb237148f20b98bad603078fa")]
 [assembly: System.Reflection.AssemblyProductAttribute("ShiftPay.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ShiftPay.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

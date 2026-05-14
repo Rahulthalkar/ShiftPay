@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ShiftPay.DAL\ShiftPay.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
