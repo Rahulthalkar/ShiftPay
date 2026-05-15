@@ -13,6 +13,7 @@ namespace ShiftPay.Domain.Tables
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AttendanceId { get; set; }
+        [ForeignKey("UserId")]
         public int UserId { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan StartTime { get; set; }
@@ -29,6 +30,6 @@ namespace ShiftPay.Domain.Tables
 
         // Navigation Property
         [JsonIgnore]
-        public tblUser? Worker { get; set; }
+        public tblUser? Users { get; set; }
     }
 }

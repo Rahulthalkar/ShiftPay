@@ -61,8 +61,7 @@ namespace ShiftPay.Domain.Model
     {
         Day,
         FirstHalfDay,
-        SecondHalfDay,
-        HalfDay,
+        SecondHalfDay,      
         HalfNight,
         FullNight,
         DoubleNight
