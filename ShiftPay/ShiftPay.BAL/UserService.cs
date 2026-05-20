@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using ShiftPay.DAL.Interface;
 using ShiftPay.Domain.Model;
+using ShiftPay.Domain.Tables;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -85,6 +86,24 @@ namespace ShiftPay.BAL
                 result.IsSuccess = false;
                 result.Value = null;
                 result.ErrorMessageKey = "An error occurred while fetching the users.";
+                result.ExceptionInfo = ex.Message;
+                return result;
+            }
+        }
+
+        public APIResult<List<roleResponseModel>> GetAllRoles()
+        {
+            var result = new APIResult<List<roleResponseModel>>();
+            try
+            {
+                result = _userRepository.GetAllRoles();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Value = null;
+                result.ErrorMessageKey = "An error occurred while fetching the roles.";
                 result.ExceptionInfo = ex.Message;
                 return result;
             }

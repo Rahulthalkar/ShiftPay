@@ -261,5 +261,62 @@ namespace ShiftPay.BAL
                 return result;
             }
         }
+        public APIResult<string> ApprovalAttendanceByManagerBatch(ApprovalBatchModel model)
+        {
+            APIResult<string> result = new APIResult<string>();
+            try
+            {
+                var approvalResult = attendanceRepository.ApprovalAttendanceByManagerBatch(model);
+                if (approvalResult.IsSuccess)
+                {
+                    result.IsSuccess = true;
+                    result.Value = approvalResult.Value;
+                    result.ExceptionInfo = approvalResult.ExceptionInfo;
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.ErrorMessageKey = approvalResult.ErrorMessageKey;
+                    result.ExceptionInfo = approvalResult.ExceptionInfo;
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ErrorMessageKey = "ErrorApprovingAttendance";
+                result.ExceptionInfo = ex.Message;
+                return result;
+            }
+        }
+
+        public APIResult<List<AttendanceModel>> GetAllAttendances()
+        {
+            APIResult<List<AttendanceModel>> result = new APIResult<List<AttendanceModel>>();
+            try
+            {
+                var attendancesResult = attendanceRepository.GetAllAttendances();
+                if (attendancesResult.IsSuccess)
+                {
+                    result.IsSuccess = true;
+                    result.Value = attendancesResult.Value;
+                    result.ExceptionInfo = "Attendances retrieved successfully.";
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.ErrorMessageKey = attendancesResult.ErrorMessageKey;
+                    result.ExceptionInfo = attendancesResult.ExceptionInfo;
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.ErrorMessageKey = "ErrorRetrievingAttendances";
+                result.ExceptionInfo = ex.Message;
+                return result;
+            }
+        }
     }
 }

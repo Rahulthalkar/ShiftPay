@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using ShiftPay.BAL;
 using ShiftPay.Domain.Model;
-using ShiftPay.Domain.Tables;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -14,9 +13,9 @@ namespace ShiftPay.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-
         private readonly IConfiguration _configuration;
         private readonly AccountService _accountService;
+
         public AccountController(IConfiguration configuration, AccountService accountService)
         {
             _configuration = configuration;
@@ -25,20 +24,21 @@ namespace ShiftPay.API.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(LoginDto loginModel)
+        public IActionResult Login([FromBody] LoginDto loginModel)
         {
             var result = _accountService.Login(loginModel);
-            if (result.IsSuccess)
-            {   
-               // var token = GenerateJwtToken(result);
+
+            if (result.IsSuccess && result.Value != null)
+            {
+                // Generate JWT from the validated LoginResponse and embed it in the response
+                result.Value.Token = GenerateJwtToken(result.Value);
                 return Ok(result);
             }
-            else
-            {
-                return BadRequest(result);
-            }
+
+            return Unauthorized(result);
         }
-        private string GenerateJwtToken(tblUser user)
+
+        private string GenerateJwtToken(LoginResponse user)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
             var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
@@ -47,14 +47,17 @@ namespace ShiftPay.API.Controllers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Role, user.Role.ToString()),
-                    new Claim("id", user.Id.ToString())
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+                    new Claim(ClaimTypes.Role, user.RoleId.ToString()),
+                    new Claim("managerId", user.ManagerId?.ToString() ?? "0")
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 Issuer = jwtSettings["Issuer"],
                 Audience = jwtSettings["Audience"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

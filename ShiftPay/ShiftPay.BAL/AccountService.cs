@@ -25,7 +25,7 @@ namespace ShiftPay.BAL
                 
                 var user = _accountRepository.Login(loginModel);               
 
-                if (user != null)
+                if (user.IsSuccess)
                 {
                     result.IsSuccess = true;
                     result.Value = user.Value;

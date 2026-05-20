@@ -48,11 +48,13 @@
     <!-- Filters -->
     <div class="flex flex-col md:flex-row gap-6 items-center">
         <div class="flex bg-slate-100 dark:bg-slate-900 p-1.5 rounded-md gap-1">
-            <button
-                class="px-6 py-2.5 bg-slate-900 dark:bg-indigo-600 text-white rounded-md text-xs font-bold shadow-lg">This
+            <button (click)="selectThisMonth()"
+                [ngClass]="activeFilter === 'month' ? 'bg-slate-900 dark:bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'"
+                class="px-6 py-2.5 rounded-md text-xs font-bold transition-all">This
                 Month</button>
-            <button
-                class="px-6 py-2.5 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded-md text-xs font-bold transition-all">Year
+            <button (click)="selectYearToDate()"
+                [ngClass]="activeFilter === 'year' ? 'bg-slate-900 dark:bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'"
+                class="px-6 py-2.5 rounded-md text-xs font-bold transition-all">Year
                 to Date (Apr - Mar)</button>
         </div>
 
@@ -88,7 +90,7 @@
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div *ngFor="let stat of [
-                { label: 'Days Worked', val: stats.daysWorked, icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', color: 'text-blue-500 bg-blue-50 dark:bg-blue-500/10' },
+                { label: 'Days', val: stats.day, icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', color: 'text-blue-500 bg-blue-50 dark:bg-blue-500/10' },
                 { label: 'Half Days', val: stats.halfDays, icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z', color: 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' },
                 { label: 'Second Half', val: stats.secondHalf, icon: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z', color: 'text-orange-500 bg-orange-50 dark:bg-orange-500/10' },
                 { label: 'Full Night', val: stats.fullNight, icon: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z', color: 'text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10' },
@@ -119,7 +121,7 @@
             { label: 'Total Shifts', val: stats.totalShifts, unit: 'SHIFTS', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', color: 'bg-blue-400', valDisplay: stats.totalShifts },
             { label: 'Salary Earned', val: stats.salaryEarned, unit: '₹', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2', color: 'bg-emerald-400', valDisplay: '₹' + stats.salaryEarned },
             { label: 'Advances Taken', val: stats.advancesTaken, unit: '₹', icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z', color: 'bg-amber-400', valDisplay: '₹' + stats.advancesTaken },
-            { label: 'Days Worked', val: stats.workingDays, unit: 'DAYS', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', color: 'bg-indigo-400', valDisplay: stats.workingDays }
+            { label: 'Total Days Worked', val: stats.totalDays, unit: 'DAYS', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', color: 'bg-indigo-400', valDisplay: stats.totalDays }
         ]" class="space-y-4 p-3 bg-white dark:bg-slate-900 rounded-md border border-slate-50 dark:border-slate-800">
             <div class="flex items-center justify-between">
                 <div class="p-2.5 rounded-md bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400">
@@ -168,6 +170,35 @@
                     <span>Date & Shift</span>
                     <span class="text-right">Salary</span>
                 </div>
+
+                <div *ngIf="recentShifts.length > 0" class="max-h-[350px] overflow-y-auto pr-2 space-y-3">
+                    <div *ngFor="let shift of recentShifts"
+                        class="flex items-center justify-between p-4 bg-slate-50/50 dark:bg-slate-800/30 rounded-2xl border border-transparent hover:border-slate-100 dark:hover:border-slate-800 transition-all duration-300">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-black text-slate-800 dark:text-white">{{shift.shiftType}} Shift
+                                </p>
+                                <p
+                                    class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-0.5">
+                                    {{shift.date | date:'mediumDate'}} • {{shift.startTime}} - {{shift.endTime}}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-black text-slate-800 dark:text-white">₹{{shift.salary |
+                                number:'1.2-2'}}</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div *ngIf="recentShifts.length === 0" class="py-20 text-center space-y-4">
                     <div
                         class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full mx-auto flex items-center justify-center text-slate-300">
@@ -207,6 +238,35 @@
                     <span>Date & Reason</span>
                     <span class="text-right">Amount</span>
                 </div>
+
+                <div *ngIf="recentAdvances.length > 0" class="max-h-[350px] overflow-y-auto pr-2 space-y-3">
+                    <div *ngFor="let adv of recentAdvances"
+                        class="flex items-center justify-between p-4 bg-slate-50/50 dark:bg-slate-800/30 rounded-2xl border border-transparent hover:border-slate-100 dark:hover:border-slate-800 transition-all duration-300">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M17 9V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2m2 4h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-black text-slate-800 dark:text-white">{{adv.reason}}</p>
+                                <p
+                                    class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-0.5">
+                                    {{adv.date | date:'mediumDate'}}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-black text-emerald-600 dark:text-emerald-400">₹{{adv.amount |
+                                number:'1.2-2'}}</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div *ngIf="recentAdvances.length === 0" class="py-20 text-center space-y-4">
                     <div
                         class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full mx-auto flex items-center justify-center text-slate-300">
@@ -219,76 +279,10 @@
                     <p class="text-slate-400 text-sm font-bold uppercase tracking-widest">No advances taken</p>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Calendar: Operational Lifecycle -->
-    <div
-        class="bg-white dark:bg-slate-900 rounded-md border border-slate-50 dark:border-slate-800 shadow-sm p-12 space-y-10">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div class="flex items-center gap-4">
-                <div class="w-1.5 h-8 bg-indigo-600 rounded-full"></div>
-                <div>
-                    <h3 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight leading-none">
-                        Operational Lifecycle</h3>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">April 2024 Registry
-                    </p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <select
-                    class="bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300">
-                    <option>APRIL</option>
-                </select>
-                <select
-                    class="bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300">
-                    <option>2024</option>
-                </select>
-                <button class="p-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
-                        <path d="M21 3v5h-5" />
-                    </svg>
-                </button>
-            </div>
         </div>
-
-        <div class="grid grid-cols-7 gap-1 md:gap-4">
-            <div *ngFor="let day of ['S', 'M', 'T', 'W', 'T', 'F', 'S']"
-                class="text-center text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
-                {{day}}
-            </div>
-            <div *ngFor="let item of calendarDays" [class.invisible]="!item.day" [class.bg-indigo-50]="item.current"
-                [class.dark:bg-indigo-900/20]="item.current" [class.border-indigo-600]="item.current"
-                class="aspect-square rounded md:rounded-lg border border-slate-50 dark:border-slate-800 flex items-center justify-center text-[10px] md:text-sm font-black text-slate-700 dark:text-slate-400 transition-all hover:border-indigo-500/30 cursor-pointer">
-                {{item.day}}
-            </div>
-        </div>
-
-        <!-- Legend -->
-        <div
-            class="flex flex-wrap items-center justify-between gap-8 pt-10 border-t border-slate-50 dark:border-slate-800">
-            <div class="flex flex-wrap gap-6">
-                <div *ngFor="let leg of [
-                    { label: 'Full Day', color: 'bg-blue-400' },
-                    { label: 'Half Day', color: 'bg-amber-400' },
-                    { label: 'Second Half', color: 'bg-orange-400' },
-                    { label: 'Half Night', color: 'bg-slate-400' },
-                    { label: 'Full Night', color: 'bg-indigo-400' },
-                    { label: 'Double Night', color: 'bg-fuchsia-400' }
-                ]" class="flex items-center gap-2">
-                    <span [class]="leg.color" class="w-2 h-2 rounded-full"></span>
-                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{leg.label}}</span>
-                </div>
-            </div>
-            <div
-                class="flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl text-[9px] font-black text-emerald-600 uppercase tracking-widest border border-emerald-100 dark:border-emerald-500/20">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                Statistics Live Update Start
-            </div>
-        </div>
+        <!-- Calendar: Operational Lifecycle -->
+        <app-calendar [startDate]="startDate" [workEntries]="rawWorkEntries" (dateRangeChange)="onDateRangeChanged($event)"></app-calendar>
     </div>
 
 </div>

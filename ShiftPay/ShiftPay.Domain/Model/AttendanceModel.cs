@@ -1,4 +1,4 @@
-﻿using ShiftPay.Domain.Tables;
+using ShiftPay.Domain.Tables;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -128,7 +128,12 @@ namespace ShiftPay.Domain.Model
 
         public TimeSpan EndTime { get; set; }
         public ShiftType ShiftType { get; set; }
-        public bool? Status { get; set; }
+        public string Status { get; set; }
 
+    }
+    public class ApprovalBatchModel
+    {
+        public List<int> AttendanceIds { get; set; } = new List<int>();
+        public int ManagerId { get; set; }
     }
 }

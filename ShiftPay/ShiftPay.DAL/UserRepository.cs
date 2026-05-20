@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using ShiftPay.DAL.Interface;
 using ShiftPay.Domain.Model;
 using ShiftPay.Domain.Tables;
@@ -191,6 +191,35 @@ namespace ShiftPay.DAL
                     result.Value = false;
                     result.IsSuccess = false;
                     result.ErrorMessageKey = "ErrorUpdatingUser";
+                    result.ExceptionInfo = ex.ToString();
+                    return result;
+                }
+            }
+        }
+
+        public APIResult<List<roleResponseModel>> GetAllRoles()
+        {
+            using (var dbContext = new EmpDbEntities(connectionString))
+            {
+                APIResult<List<roleResponseModel>> result = new APIResult<List<roleResponseModel>>();
+                try
+                {
+                    var roles = (from role in dbContext.Roles
+                                 select new roleResponseModel
+                                 {
+                                     Id = role.Id,
+                                     RoleName = role.Role
+                                 }).ToList();
+                    result.Value = roles;
+                    result.IsSuccess = true;
+                    result.ExceptionInfo = "success";
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    result.Value = null;
+                    result.IsSuccess = false;
+                    result.ErrorMessageKey = "ErrorRetrievingRoles";
                     result.ExceptionInfo = ex.ToString();
                     return result;
                 }

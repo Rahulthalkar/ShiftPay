@@ -48,7 +48,29 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"]
+        ValidAudience = jwtSettings["Audience"],
+        ClockSkew = TimeSpan.Zero   // No tolerance on token expiry
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var authorization = context.Request.Headers["Authorization"].ToString();
+            if (!string.IsNullOrEmpty(authorization))
+            {
+                if (authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                {
+                    var token = authorization.Substring("Bearer ".Length).Trim();
+                    // Strip nested/duplicate "bearer" or "Bearer" if it got doubled by client/swagger
+                    if (token.StartsWith("bearer ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        token = token.Substring("bearer ".Length).Trim();
+                    }
+                    context.Token = token;
+                }
+            }
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -60,11 +82,11 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Enter JWT Token like: Bearer {your_token}",
+        Description = "Enter your JWT token only (without 'Bearer' prefix). Example: eyJhbGci...",
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
-        Scheme = "bearer"
+        Scheme = "Bearer"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement

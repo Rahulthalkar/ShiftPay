@@ -37,7 +37,7 @@ namespace ShiftPay.DAL
                                        StartTime = atte.StartTime,
                                        EndTime = atte.EndTime,
                                        ShiftType = (ShiftType)atte.ShiftType,
-                                       Status = atte.Status
+                                       Status = atte.Status ? "APPROVED" : "PENDING"
                                    }).ToList();
                     result.IsSuccess = true;
                     result.Value = workers;
@@ -267,11 +267,6 @@ namespace ShiftPay.DAL
             return result;
         }
 
-        //public APIResult<List<ShiftReportResponse>> GetShiftReport(DateTime startDate, DateTime endDate, int supervisorId)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         public APIResult<List<AttendanceModel>> IsExistShiftTypeAttendanceGetById(int UserId, DateTime date)
         {
             using(var dbContext = new EmpDbEntities(connectionString))
@@ -351,6 +346,97 @@ namespace ShiftPay.DAL
                     result.IsSuccess = false;
                     result.Value = null;
                     result.ErrorMessageKey = "ErrorMarkingAttendance";
+                    result.ExceptionInfo = ex.Message;
+                    return result;
+                }
+            }
+        }
+        public APIResult<string> ApprovalAttendanceByManagerBatch(ApprovalBatchModel model)
+        {
+            using (var dbContext = new EmpDbEntities(connectionString))
+            {
+                APIResult<string> result = new APIResult<string>();
+                try
+                {
+                    if (model.AttendanceIds == null || !model.AttendanceIds.Any())
+                    {
+                        result.IsSuccess = false;
+                        result.ErrorMessageKey = "NoAttendanceIdsProvided";
+                        result.ExceptionInfo = "No attendance IDs were provided for approval.";
+                        return result;
+                    }
+
+                    var attendances = dbContext.Attendances
+                        .Where(a => model.AttendanceIds.Contains(a.AttendanceId))
+                        .ToList();
+
+                    if (!attendances.Any())
+                    {
+                        result.IsSuccess = false;
+                        result.ErrorMessageKey = "AttendancesNotFound";
+                        result.ExceptionInfo = "No matching attendance records found.";
+                        return result;
+                    }
+
+                    foreach (var attendance in attendances)
+                    {
+                        attendance.Status = true;
+                        attendance.ApporveById = model.ManagerId;
+                    }
+
+                    dbContext.SaveChanges();
+
+                    result.IsSuccess = true;
+                    result.Value = $"{attendances.Count} attendance record(s) approved successfully.";
+                    result.ExceptionInfo = "Batch approval completed.";
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    result.IsSuccess = false;
+                    result.Value = null;
+                    result.ErrorMessageKey = "ErrorApprovingAttendance";
+                    result.ExceptionInfo = ex.Message;
+                    return result;
+                }
+            }
+        }
+
+        public APIResult<List<AttendanceModel>> GetAllAttendances()
+        {
+            using(var dbContext = new EmpDbEntities(connectionString))
+            {
+                APIResult<List<AttendanceModel>> result = new APIResult<List<AttendanceModel>>();
+                try
+                {
+                    var attendances = dbContext.Attendances
+                        .Select(a => new AttendanceModel
+                        {
+                            AttendanceId = a.AttendanceId,
+                            UserId = a.UserId,
+                            Date = a.Date,
+                            StartTime = a.StartTime,
+                            EndTime = a.EndTime,
+                            ShiftType = (ShiftType)a.ShiftType,
+                            Salary = a.Salary,
+                            Status = a.Status,
+                            ApporveById = a.ApporveById,
+                            Latitude = a.Latitude,
+                            Longitude = a.Longitude,
+                            ClockInTime = a.ClockInTime,
+                            ClockOutTime = a.ClockOutTime
+                        }).ToList();
+                    result.IsSuccess = true;
+                    result.Value = attendances;
+                    result.ExceptionInfo = "Attendances retrieved successfully.";
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception (not implemented here)
+                    result.IsSuccess = false;
+                    result.Value = null;
+                    result.ErrorMessageKey = "ErrorRetrievingAttendances";
                     result.ExceptionInfo = ex.Message;
                     return result;
                 }

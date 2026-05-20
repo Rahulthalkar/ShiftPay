@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { routes } from '../../app.routes';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,8 +14,17 @@ export class SidebarComponent {
   @Input() isOpen = true;
   @Output() closeSidebar = new EventEmitter<void>();
 
+  private router = inject(Router)
   onClose() {
     this.closeSidebar.emit();
+  }
+  logout() {
+    this.router.navigateByUrl('/login');
+    const isValid = sessionStorage.getItem("currentUser");
+    if (isValid) {
+      sessionStorage.clear();
+      sessionStorage.removeItem('currentUser');
+    }
   }
 
   onNavClick() {

@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DataService } from '../../shared/service/dataservice';
+import { AuthService } from '../../shared/service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -25,8 +27,13 @@ export class LoginComponent {
   loginForm: FormGroup;
   showPassword = false;
   selectedRole: 'Admin' | 'Manager' | 'Worker' = 'Admin';
+  errorMessage = '';
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private dataservice: DataService,
+    private authService: AuthService
+  ) {
     this.loginForm = new FormGroup({
       username: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
@@ -44,13 +51,46 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log('Login attempt with role:', this.selectedRole, this.loginForm.value);
-      // Mock login routing
-      if (this.selectedRole === 'Admin') {
-        this.router.navigate(['/dashboard-admin']);
-      } else {
-        this.router.navigate(['/dashboard-admin']); // Modify as needed
-      }
+      this.errorMessage = '';
+      const loginPayload = {
+        username: this.loginForm.value.username,
+        password: this.loginForm.value.password
+      };
+
+      this.dataservice.login(loginPayload).subscribe({
+        next: (res: any) => {
+          if (res && res.isSuccess && res.value) {
+            // Save token and user session details
+            this.authService.saveSession(res);
+
+            const roleId = res.value.roleId;
+
+            // Route based on role: 1 = Admin, 2 = Manager, 3 = Worker
+            if (roleId === 1) {
+              this.router.navigate(['/dashboard-admin']);
+            } else if (roleId === 2) {
+              this.router.navigate(['/approvalattendance']);
+            } else if (roleId === 3) {
+              this.router.navigate(['/workerdashboard']);
+            } else {
+              // Fallback routing based on UI selection if RoleId is custom
+              if (this.selectedRole === 'Admin') {
+                this.router.navigate(['/dashboard-admin']);
+              } else if (this.selectedRole === 'Manager') {
+                this.router.navigate(['/approvalattendance']);
+              } else {
+                this.router.navigate(['/workerdashboard']);
+              }
+            }
+          } else {
+            this.errorMessage = res?.errorMessageKey || 'Invalid username or password.';
+          }
+        },
+        error: (err: any) => {
+          console.error('Login error:', err);
+          this.errorMessage = err.error?.errorMessageKey || err.error?.exceptionInfo || 'Failed to authenticate. Please check your connection.';
+        }
+      });
     } else {
       this.loginForm.markAllAsTouched();
     }

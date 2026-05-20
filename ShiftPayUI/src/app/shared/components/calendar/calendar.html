@@ -1,0 +1,72 @@
+<div
+    class="bg-white dark:bg-slate-900 rounded-md border border-slate-50 dark:border-slate-800 shadow-sm p-12 space-y-10">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+            <div class="w-1.5 h-8 bg-indigo-600 rounded-full"></div>
+            <div>
+                <h3 class="text-2xl font-black text-slate-800 dark:text-white tracking-tight leading-none">
+                    Operational Lifecycle</h3>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{{startDate |
+                    date:'MMMM yyyy'}} Registry
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <select [ngModel]="selectedMonth" (ngModelChange)="selectedMonth = +$event; onDropdownChange()"
+                class="bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <option *ngFor="let m of months" [value]="m.value">{{m.name | uppercase}}</option>
+            </select>
+            <select [ngModel]="selectedYear" (ngModelChange)="selectedYear = +$event; onDropdownChange()"
+                class="bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <option *ngFor="let y of years" [value]="y">{{y}}</option>
+            </select>
+            <button class="p-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                    <path d="M21 3v5h-5" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-7 gap-1 md:gap-4">
+        <div *ngFor="let day of ['S', 'M', 'T', 'W', 'T', 'F', 'S']"
+            class="text-center text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+            {{day}}
+        </div>
+        <div *ngFor="let item of calendarDays" [class.invisible]="!item.day"
+            [ngClass]="item.shiftClass || (item.current ? 'bg-indigo-50 border-indigo-600 dark:bg-indigo-900/20' : 'bg-white dark:bg-slate-900')"
+            class="aspect-square rounded md:rounded-lg border border-slate-50 dark:border-slate-800 flex flex-col items-center justify-center text-[10px] md:text-sm font-black text-slate-700 dark:text-slate-400 transition-all hover:border-indigo-500/30 cursor-pointer relative">
+            {{item.day}}
+            <div *ngIf="item.shifts && item.shifts.length > 0"
+                class="absolute bottom-1.5 flex gap-1 justify-center items-center w-full px-1">
+                <span *ngFor="let s of item.shifts" class="w-1.5 h-1.5 rounded-full shrink-0 animate-pulse"
+                    [ngClass]="s.dotColor" [title]="s.shiftType"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="flex flex-wrap items-center justify-between gap-8 pt-10 border-t border-slate-50 dark:border-slate-800">
+        <div class="flex flex-wrap gap-6">
+            <div *ngFor="let leg of [
+                { label: 'Full Day', color: 'bg-blue-400' },
+                { label: 'Half Day', color: 'bg-amber-400' },
+                { label: 'Second Half', color: 'bg-orange-400' },
+                { label: 'Half Night', color: 'bg-slate-400' },
+                { label: 'Full Night', color: 'bg-indigo-400' },
+                { label: 'Double Night', color: 'bg-fuchsia-400' }
+            ]" class="flex items-center gap-2">
+                <span [class]="leg.color" class="w-2 h-2 rounded-full"></span>
+                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{leg.label}}</span>
+            </div>
+        </div>
+        <div
+            class="flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl text-[9px] font-black text-emerald-600 uppercase tracking-widest border border-emerald-100 dark:border-emerald-500/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            Statistics Live Update Start
+        </div>
+    </div>
+</div>

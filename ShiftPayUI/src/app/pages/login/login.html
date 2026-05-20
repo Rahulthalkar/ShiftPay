@@ -75,6 +75,12 @@
 
                 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
 
+                    <!-- Error Message Display -->
+                    <div *ngIf="errorMessage" class="p-3.5 bg-red-50 dark:bg-red-950/30 border border-red-200/50 dark:border-red-900/50 rounded-lg flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-red-500 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                        <span class="text-xs font-bold text-red-600 dark:text-red-400 leading-snug">{{ errorMessage }}</span>
+                    </div>
+
                     <!-- Role Selector -->
                     <div class="space-y-3">
                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Select Access

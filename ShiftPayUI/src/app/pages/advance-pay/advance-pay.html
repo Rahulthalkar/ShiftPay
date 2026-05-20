@@ -10,7 +10,8 @@
             <span class="hover:text-indigo-600 cursor-pointer transition-colors">Payroll Overview</span>
         </nav>
         <div class="flex flex-col gap-2">
-            <h1 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">Issue Salary Advance</h1>
+            <h1 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">Issue Salary
+                Advance</h1>
             <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-2xl">
                 Record and authorize immediate fund transfers for employee financial assistance.
             </p>
@@ -51,10 +52,10 @@
                                 <path d="m21 21-4.3-4.3" />
                             </svg>
                         </div>
-                        <select formControlName="workerId"
+                        <select formControlName="id"
                             class="w-full bg-slate-50 dark:bg-slate-800/50 border-none rounded-md pl-14 pr-5 py-5 text-sm font-bold text-slate-700 dark:text-slate-300 appearance-none focus:ring-4 focus:ring-blue-500/10 transition-all cursor-pointer">
                             <option value="" disabled>Search by name or employee ID...</option>
-                            <option *ngFor="let worker of workers" [value]="worker.id">{{worker.name}} ({{worker.dept}})
+                            <option *ngFor="let worker of workers" [value]="worker.id">{{worker.fullName}}
                             </option>
                         </select>
                         <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
@@ -148,7 +149,7 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-black text-slate-800 dark:text-white">{{activity.workerName}}
+                                    <p class="text-sm font-black text-slate-800 dark:text-white">{{activity.fullName}}
                                     </p>
                                     <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500">
                                         {{activity.department}}</p>
@@ -159,7 +160,7 @@
                                     number}}</p>
                                 <p
                                     class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter">
-                                    {{activity.timeLabel}}</p>
+                                    {{activity.date}}</p>
                             </div>
                         </div>
                         <div
@@ -201,21 +202,29 @@
                 </svg>
             </div>
             <div class="space-y-1">
-                <h4 class="text-xs md:text-sm font-black text-slate-800 dark:text-white uppercase tracking-tight">Policy Compliance Check</h4>
+                <h4 class="text-xs md:text-sm font-black text-slate-800 dark:text-white uppercase tracking-tight">Policy
+                    Compliance Check</h4>
                 <p class="text-[10px] md:text-[11px] font-medium text-slate-500 dark:text-slate-400 leading-relaxed">
                     Salary advances are automatically deducted from the next payroll cycle.
                 </p>
             </div>
         </div>
 
-        <div class="flex items-center justify-between md:justify-end gap-8 md:gap-12 relative z-10 w-full md:w-auto pr-0 md:pr-4">
+        <div
+            class="flex items-center justify-between md:justify-end gap-8 md:gap-12 relative z-10 w-full md:w-auto pr-0 md:pr-4">
             <div class="text-left md:text-right">
-                <p class="text-[8px] md:text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Limit</p>
-                <p class="text-lg md:text-xl font-black text-slate-800 dark:text-white">₹{{complianceStats.dailyLimit | number}}</p>
+                <p
+                    class="text-[8px] md:text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">
+                    Limit</p>
+                <p class="text-lg md:text-xl font-black text-slate-800 dark:text-white">₹{{complianceStats.dailyLimit |
+                    number}}</p>
             </div>
             <div class="text-left md:text-right">
-                <p class="text-[8px] md:text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Utilized</p>
-                <p class="text-lg md:text-xl font-black text-blue-600 dark:text-blue-400">₹{{complianceStats.utilized | number}}</p>
+                <p
+                    class="text-[8px] md:text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">
+                    Utilized</p>
+                <p class="text-lg md:text-xl font-black text-blue-600 dark:text-blue-400">₹{{complianceStats.utilized |
+                    number}}</p>
             </div>
         </div>
     </div>

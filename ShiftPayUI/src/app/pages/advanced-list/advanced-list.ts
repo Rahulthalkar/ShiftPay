@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { AdvanceService } from '../../shared/service/advance.Service';
+import { UserService } from '../../shared/service/users.Service';
 
 interface AdvanceRecord {
   date: string;
   amount: number;
   reason: string;
   status: 'Approved' | 'Pending' | 'Rejected';
+  userId?: number;
 }
 
 interface Worker {
@@ -23,41 +26,67 @@ interface Worker {
   styleUrl: './advanced-list.css',
 })
 export class AdvancedList implements OnInit {
-  workers: Worker[] = [
-    { id: '#WL-2024-001', name: 'Rajesh Kumar' },
-    { id: '#WL-2024-042', name: 'Anita Mishra' },
-    { id: '#WL-2024-118', name: 'Sunil Prasad' },
-    { id: '#WL-2024-089', name: 'Vikram Yadav' },
-  ];
-
-  selectedWorkerId: string = this.workers[0].id;
-  workerName: string = this.workers[0].name;
-  workerId: string = this.workers[0].id;
-
-  // Database of advances mapped to worker IDs
-  allAdvances: { [key: string]: AdvanceRecord[] } = {
-    '#WL-2024-001': [
-      { date: '2024-03-15', amount: 5000, reason: 'Medical Emergency', status: 'Approved' },
-      { date: '2024-02-10', amount: 2000, reason: 'Festival Advance', status: 'Approved' },
-      { date: '2024-04-01', amount: 1500, reason: 'Personal Loan', status: 'Pending' },
-      { date: '2024-01-20', amount: 3000, reason: 'Home Repairs', status: 'Approved' },
-    ],
-    '#WL-2024-042': [
-      { date: '2024-03-20', amount: 4500, reason: 'Family Visit', status: 'Approved' },
-      { date: '2024-02-05', amount: 1200, reason: 'Utility Bills', status: 'Approved' },
-    ],
-    '#WL-2024-118': [
-      { date: '2024-04-10', amount: 8000, reason: 'Education Fees', status: 'Pending' },
-    ],
-    '#WL-2024-089': [],
-  };
-
+  workers: Worker[] = [];
+  allAdvances: AdvanceRecord[] = [];
   advances: AdvanceRecord[] = [];
+
+  selectedWorkerId: string = 'all';
+  workerName: string = 'All Workers';
+  workerId: string = 'ALL';
+
   totalAdvance: number = 0;
   approvedCount: number = 0;
 
+  constructor(
+    private advanceService: AdvanceService,
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
+  ) { }
+
   ngOnInit() {
-    this.updateWorkerDetails();
+    this.getWorkers();
+    this.getAllAdvances();
+  }
+
+  getWorkers() {
+    this.userService.getAllUser().subscribe({
+      next: (res: any) => {
+        if (res && res.isSuccess && res.value) {
+          const mappedWorkers = res.value.map((w: any) => ({
+            id: String(w.id),
+            name: w.fullName
+          }));
+          this.workers = [{ id: 'all', name: 'All Workers' }, ...mappedWorkers];
+          this.selectedWorkerId = 'all';
+          this.updateWorkerDetails();
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load workers:', err);
+      }
+    });
+  }
+
+  getAllAdvances() {
+    this.advanceService.getAllAdvances().subscribe({
+      next: (res: any) => {
+        if (res && res.isSuccess && res.value) {
+          this.allAdvances = res.value.map((item: any) => ({
+            date: item.date,
+            amount: item.amount,
+            reason: item.reason || 'Salary Advance',
+            status: 'Approved',
+            userId: item.userId
+          }));
+          this.updateWorkerDetails();
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load advances:', err);
+      }
+    });
   }
 
   onWorkerChange() {
@@ -65,13 +94,19 @@ export class AdvancedList implements OnInit {
   }
 
   updateWorkerDetails() {
-    const selectedWorker = this.workers.find(w => w.id === this.selectedWorkerId);
-    if (selectedWorker) {
-      this.workerName = selectedWorker.name;
-      this.workerId = selectedWorker.id;
-      this.advances = this.allAdvances[this.selectedWorkerId] || [];
-      this.refreshStats();
+    if (this.selectedWorkerId === 'all') {
+      this.workerName = 'All Workers';
+      this.workerId = 'ALL';
+      this.advances = this.allAdvances;
+    } else {
+      const selectedWorker = this.workers.find(w => w.id === this.selectedWorkerId);
+      if (selectedWorker) {
+        this.workerName = selectedWorker.name;
+        this.workerId = selectedWorker.id;
+        this.advances = this.allAdvances.filter(a => String(a.userId) === this.selectedWorkerId);
+      }
     }
+    this.refreshStats();
   }
 
   refreshStats() {

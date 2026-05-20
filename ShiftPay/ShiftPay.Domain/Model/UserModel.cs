@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -110,6 +110,11 @@ namespace ShiftPay.Domain.Model
         /// ExpiresIn
         /// </summary>
         public double ExpiresIn { get; set; }
+
+        /// <summary>
+        /// JWT Bearer Token
+        /// </summary>
+        public string? Token { get; set; }
     }
     public class LoginDto
     {
@@ -139,4 +144,10 @@ namespace ShiftPay.Domain.Model
 
 
     }
+
+    public class roleResponseModel
+    {
+        public int Id { get; set; }
+        public string RoleName { get; set; }
+    }      
 }

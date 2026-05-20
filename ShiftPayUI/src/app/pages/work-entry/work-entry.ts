@@ -1,6 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule, Location } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DataService } from '../../shared/service/dataservice';
+import { UserService } from '../../shared/service/users.Service';
+import { ShiftType } from '../../shared/interface/models';
+import { ToastrService } from '../../shared/service/toastr.service';
+
 
 interface SessionHistory {
   name: string;
@@ -24,9 +29,15 @@ interface SessionHistory {
 })
 export class WorkEntryComponent implements OnInit {
   workForm: FormGroup;
-  
-  workers = ['Rahul Sharma (W-102)', 'Anita Desai (W-105)', 'John Smith (W-109)'];
-  shiftTypes = ['Day Shift', 'Half Night', 'Full Night', 'Double Night'];
+
+  workers: any[] = [];
+
+  shiftTypes = Object.keys(ShiftType)
+    .filter(key => isNaN(Number(key)))
+    .map(key => ({
+      id: ShiftType[key as keyof typeof ShiftType],
+      name: key
+    }));
 
   history: SessionHistory[] = [
     {
@@ -51,21 +62,75 @@ export class WorkEntryComponent implements OnInit {
     }
   ];
 
-  constructor() {
-    this.workForm = new FormGroup({
-      worker: new FormControl(this.workers[0]),
-      shiftType: new FormControl(this.shiftTypes[3]),
-      date: new FormControl('2023-10-24'),
-      startTime: new FormControl('21:00'),
-      endTime: new FormControl('03:00')
+  constructor(private dataService: DataService, private fb: FormBuilder,
+    private userService: UserService,
+    private toaster: ToastrService,
+    private cdr: ChangeDetectorRef,
+    private location: Location
+  ) {
+    this.workForm = this.fb.group({
+      id: [0, Validators.required],
+      shiftType: ['', Validators.required],
+      date: [new Date().getDate(), Validators.required],
+      startTime: ['', Validators.required],
+      endTime: ['', Validators.required],
+      status: []
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getAllWorkers();
+  }
+
+  getAllWorkers() {
+    this.userService.getAllUser().subscribe(
+      (response) => {
+        console.log('Workers fetched successfully:', response);
+        if (response && response.isSuccess && response.value) {
+          this.workers = response.value;
+        } else if (Array.isArray(response)) {
+          this.workers = response;
+        }
+      },
+      (error) => {
+        console.error('Error fetching workers:', error);
+      }
+    );
+  }
+
+  markAttendance() {
+    const formValue = this.workForm.value;
+    const selectedWorker = this.workers.find(w => w.id == formValue.id);
+    const attendanceData = {
+      userId: formValue.id,
+      status: false,
+      shiftType: formValue.shiftType,
+      date: formValue.date,
+      startTime: formValue.startTime,
+      endTime: formValue.endTime
+    };
+
+    this.dataService.markAttendance(attendanceData).subscribe({
+      next: (res: any) => {
+        if (res && res.isSuccess) {
+          this.toaster.success(res?.errorMessageKey);
+          this.location.back();
+          this.cdr.detectChanges();
+          this.resetForm();
+        } else {
+          this.toaster.error(res?.errorMessageKey || 'Failed to save work entry. Please try again.');
+        }
+      },
+      error: (error) => {
+        console.error('Error marking attendance:', error);
+        this.toaster.error(error?.error?.errorMessageKey || 'Failed to save work entry. Please try again.');
+      }
+    });
+  }
 
   resetForm() {
     this.workForm.reset({
-      worker: this.workers[0],
+      userId: this.workers[0]?.id || 0,
       shiftType: this.shiftTypes[3],
       date: '2023-10-24',
       startTime: '21:00',

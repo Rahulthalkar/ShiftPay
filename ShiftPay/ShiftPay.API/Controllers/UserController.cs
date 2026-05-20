@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShiftPay.BAL;
 using ShiftPay.Domain.Model;
@@ -69,6 +69,21 @@ namespace ShiftPay.API.Controllers
         public IActionResult GetAllUsers()
         {
             var result = userService.GetAllUsers();
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAllRoles")]
+        public IActionResult GetAllRoles()
+        {
+            var result = userService.GetAllRoles();
             if (result.IsSuccess)
             {
                 return Ok(result);

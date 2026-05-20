@@ -1,19 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { DataService } from '../../shared/service/dataservice';
+import { AuthService } from '../../shared/service/auth.service';
 
-interface AttendanceRecord {
-  id: number;
-  workerName: string;
-  workerId: string;
-  date: string;
-  shiftType: string;
-  inTime: string;
-  outTime: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  selected?: boolean;
-}
 
 @Component({
   selector: 'app-approval-attendance',
@@ -23,25 +14,91 @@ interface AttendanceRecord {
   styleUrl: './approval-attendance.css'
 })
 export class ApprovalAttendance implements OnInit {
-  records: AttendanceRecord[] = [
-    { id: 1, workerName: 'Rahul Sharma', workerId: '#WL-2024-001', date: '2024-04-28', shiftType: 'Full Day', inTime: '09:00 AM', outTime: '06:00 PM', status: 'PENDING' },
-    { id: 2, workerName: 'Anita Desai', workerId: '#WL-2024-042', date: '2024-04-28', shiftType: 'Half Day', inTime: '09:00 AM', outTime: '01:30 PM', status: 'PENDING' },
-    { id: 3, workerName: 'James Wilson', workerId: '#WL-2024-118', date: '2024-04-28', shiftType: 'Full Night', inTime: '09:00 PM', outTime: '06:00 AM', status: 'PENDING' },
-    { id: 4, workerName: 'David Miller', workerId: '#WL-2024-089', date: '2024-04-28', shiftType: 'Full Day', inTime: '09:15 AM', outTime: '06:15 PM', status: 'PENDING' },
-    { id: 5, workerName: 'Suresh Kumar', workerId: '#WL-2024-055', date: '2024-04-28', shiftType: 'Second Half', inTime: '01:30 PM', outTime: '06:30 PM', status: 'PENDING' },
-  ];
+  records: any[] = [];
 
   stats = {
-    pending: 5,
-    approvedToday: 12,
-    rejectedToday: 1,
-    totalToday: 18
+    pending: 0,
+    approvedToday: 0,
+    rejectedToday: 0,
+    totalToday: 0
   };
 
   selectAll = false;
   currentTab: 'PENDING' | 'APPROVED' | 'REJECTED' = 'PENDING';
 
-  ngOnInit() { }
+  constructor(private dataService: DataService,
+    private Cdt: ChangeDetectorRef,
+    private authService: AuthService
+  ) {
+
+  }
+  ngOnInit() {
+    const loggedInUser = this.authService.currentUserValue;
+    const userId = loggedInUser?.id || 0;
+    this.getAllWorkersBySupervisorId(userId);
+  }
+
+  getAllWorkersBySupervisorId(userId: number) {
+    this.dataService.getAllWorkersBySupervisorId(userId).subscribe((res: any) => {
+      if (res && res.isSuccess && res.value) {
+        this.records = res.value;
+      } else {
+        this.records = Array.isArray(res) ? res : [];
+      }
+      this.refreshStats();
+      this.Cdt.detectChanges();
+    });
+  }
+  executeApproval(attendanceIds: number[], successCallback: () => void) {
+    const loggedInUser = this.authService.currentUserValue;
+    const managerId = loggedInUser?.id || 0;
+
+    const payload = {
+      attendanceIds: attendanceIds,
+      managerId: managerId
+    };
+
+    this.dataService.approvalAttendanceByManagerBatch(payload).subscribe({
+      next: (res: any) => {
+        if (res && res.isSuccess) {
+          successCallback();
+          this.refreshStats();
+          this.Cdt.detectChanges();
+        } else {
+          alert('Approval failed: ' + (res?.errorMessageKey || 'unknown error'));
+        }
+      },
+      error: (err) => {
+        console.error('Approval failed:', err);
+        alert('An error occurred during approval.');
+      }
+    });
+  }
+
+  approve(record: any) {
+    this.executeApproval([record.attendanceId], () => {
+      record.status = 'APPROVED';
+    });
+  }
+
+  reject(record: any) {
+    // Keep local rejection for visual state or implement custom backend call
+    record.status = 'REJECTED';
+    this.refreshStats();
+  }
+
+  approveBatch() {
+    const selectedRecords = this.records.filter(r => r.selected && r.status === 'PENDING');
+    if (selectedRecords.length === 0) return;
+
+    this.executeApproval(selectedRecords.map(r => r.attendanceId), () => {
+      selectedRecords.forEach(r => {
+        r.status = 'APPROVED';
+        r.selected = false;
+      });
+      this.selectAll = false;
+    });
+  }
 
   get filteredRecords() {
     return this.records.filter(r => r.status === this.currentTab);
@@ -51,23 +108,11 @@ export class ApprovalAttendance implements OnInit {
     this.records.forEach(r => r.selected = this.selectAll);
   }
 
-  approve(record: AttendanceRecord) {
-    record.status = 'APPROVED';
-    this.refreshStats();
-  }
-
-  reject(record: AttendanceRecord) {
-    record.status = 'REJECTED';
-    this.refreshStats();
-  }
-
-  approveBatch() {
-    this.records.filter(r => r.selected).forEach(r => r.status = 'APPROVED');
-    this.refreshStats();
-  }
-
   refreshStats() {
     this.stats.pending = this.records.filter(r => r.status === 'PENDING').length;
+    this.stats.approvedToday = this.records.filter(r => r.status === 'APPROVED').length;
+    this.stats.rejectedToday = this.records.filter(r => r.status === 'REJECTED').length;
+    this.stats.totalToday = this.records.length;
   }
 
   getStatusClass(status: string) {

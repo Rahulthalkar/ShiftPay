@@ -20,7 +20,7 @@ namespace ShiftPay.API.Controllers
 
         [HttpPost]
         [Route("CreateAttendance")]
-        public IActionResult CreateAttendance([FromBody] AttendanceRequestModel attendanceRequestModel)
+        public IActionResult CreateAttendance(AttendanceRequestModel attendanceRequestModel)
         {
             var result = attendanceService.MarkAttendance(attendanceRequestModel);
             if (result.IsSuccess)
@@ -57,6 +57,27 @@ namespace ShiftPay.API.Controllers
         public IActionResult GetAllWorkerBySupervisorId(int SupervisorId)
         {
             var result = attendanceService.GetAllWorkerBySupervisorId(SupervisorId);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpPost("ApprovalAttendanceByManagerBatch")]
+        public IActionResult ApprovalAttendanceByManagerBatch([FromBody] ApprovalBatchModel model)
+        {
+            var result = attendanceService.ApprovalAttendanceByManagerBatch(model);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("GetAllAttendance")]
+        public IActionResult GetAllAttendance()
+        {
+            var result = attendanceService.GetAllAttendances();
             if (result.IsSuccess)
             {
                 return Ok(result);

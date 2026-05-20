@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShiftPay.BAL;
 using ShiftPay.Domain.Model;
@@ -7,6 +8,7 @@ namespace ShiftPay.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AdvanceController : ControllerBase
     {
         private readonly IConfiguration _configuration;

@@ -1,16 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-
-interface AttendanceRecord {
-  date: string;
-  day: string;
-  shiftType: string;
-  shiftClass: string;
-  timeRange: string;
-  duration: string;
-  salary: string;
-  status: 'APPROVED' | 'PENDING' | 'FLAGGED';
-}
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { DataService } from '../../shared/service/dataservice';
 
 @Component({
   selector: 'app-attendance',
@@ -22,62 +12,89 @@ interface AttendanceRecord {
   `]
 })
 export class AttendanceComponent implements OnInit {
-  records: AttendanceRecord[] = [
-    {
-      date: 'Sep 18, 2023',
-      day: 'Monday',
-      shiftType: 'DAY SHIFT',
-      shiftClass: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400',
-      timeRange: '08:00 - 17:00',
-      duration: '9.0 hrs',
-      salary: '$180.00',
-      status: 'APPROVED'
-    },
-    {
-      date: 'Sep 17, 2023',
-      day: 'Sunday',
-      shiftType: 'HALF NIGHT',
-      shiftClass: 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400',
-      timeRange: '18:00 - 00:00',
-      duration: '6.0 hrs',
-      salary: '$150.00',
-      status: 'PENDING'
-    },
-    {
-      date: 'Sep 16, 2023',
-      day: 'Saturday',
-      shiftType: 'FULL NIGHT',
-      shiftClass: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400',
-      timeRange: '22:00 - 06:00',
-      duration: '8.0 hrs',
-      salary: '$240.00',
-      status: 'FLAGGED'
-    },
-    {
-      date: 'Sep 15, 2023',
-      day: 'Friday',
-      shiftType: 'DOUBLE NIGHT',
-      shiftClass: 'bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400',
-      timeRange: '20:00 - 08:00',
-      duration: '12.0 hrs',
-      salary: '$420.00',
-      status: 'APPROVED'
-    },
-    {
-      date: 'Sep 14, 2023',
-      day: 'Thursday',
-      shiftType: 'DAY SHIFT',
-      shiftClass: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400',
-      timeRange: '08:00 - 17:00',
-      duration: '9.0 hrs',
-      salary: '$180.00',
-      status: 'APPROVED'
-    }
-  ];
+  attendanceRecord: any[] = [];
 
-  totalShifts = 24;
-  totalEarnings = '$4,820.50';
-  selectedMonth = 'September 2023';
+  totalShifts = 0;
+  totalEarnings = '₹0.00';
+  selectedMonth = 'May 2026';
 
-  ngOnInit() { }
+  constructor(private dataService: DataService, private cdr: ChangeDetectorRef) {
+    this.selectedMonth = new Date().toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric'
+    });
+  }
+
+  ngOnInit() {
+    this.getAllAttendance();
+  }
+
+  getAllAttendance() {
+    this.dataService.getAllAttendance().subscribe((response: any) => {
+      if (response && response.isSuccess && response.value) {
+        const getShiftClass = (type: string): string => {
+          switch (type) {
+            case 'Day':
+              return 'bg-blue-50/80 text-blue-600 border border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20';
+            case 'FirstHalfDay':
+            case 'HalfDay':
+              return 'bg-amber-50/80 text-amber-600 border border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20';
+            case 'SecondHalfDay':
+              return 'bg-orange-50/80 text-orange-600 border border-orange-100 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20';
+            case 'HalfNight':
+              return 'bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-500/10 dark:text-slate-400 dark:border-slate-500/20';
+            case 'FullNight':
+              return 'bg-indigo-50/80 text-indigo-600 border border-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20';
+            case 'DoubleNight':
+              return 'bg-fuchsia-50/80 text-fuchsia-600 border border-fuchsia-100 dark:bg-fuchsia-500/10 dark:text-fuchsia-400 dark:border-fuchsia-500/20';
+            default:
+              return 'bg-slate-50 text-slate-500 border border-slate-100 dark:bg-slate-500/10 dark:text-slate-400';
+          }
+        };
+
+        const getDuration = (start: string, end: string): string => {
+          if (!start || !end) return '-';
+          const [sH, sM] = start.split(':').map(Number);
+          const [eH, eM] = end.split(':').map(Number);
+          let diffHours = eH - sH;
+          let diffMins = eM - sM;
+          if (diffHours < 0) {
+            diffHours += 24;
+          }
+          if (diffMins < 0) {
+            diffMins += 60;
+            diffHours -= 1;
+          }
+          return `${diffHours} hrs ${diffMins > 0 ? diffMins + ' mins' : ''}`.trim();
+        };
+
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        this.attendanceRecord = response.value.map((item: any) => {
+          const itemDate = new Date(item.date);
+          const dayName = daysOfWeek[itemDate.getDay()];
+
+          return {
+            ...item,
+            day: dayName,
+            shiftClass: getShiftClass(item.shiftType),
+            timeRange: `${item.startTime || ''} - ${item.endTime || ''}`,
+            duration: getDuration(item.startTime, item.endTime),
+            salary: `₹${(item.salary || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          };
+        });
+
+        // Calculate dynamic page summaries
+        this.totalShifts = this.attendanceRecord.length;
+        const total = response.value.reduce((acc: number, curr: any) => acc + (curr.salary || 0), 0);
+        this.totalEarnings = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        this.cdr.detectChanges();
+      } else {
+        this.attendanceRecord = [];
+        this.totalShifts = 0;
+        this.totalEarnings = '₹0.00';
+        this.cdr.detectChanges();
+      }
+    });
+  }
 }

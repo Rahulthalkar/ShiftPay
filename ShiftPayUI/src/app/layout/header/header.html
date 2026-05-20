@@ -71,12 +71,12 @@
 
       <div class="flex items-center gap-3 pl-2">
         <div class="hidden sm:block text-right">
-          <p class="text-sm font-bold leading-none mb-1 dark:text-white">Alex Rivera</p>
-          <p class="text-[11px] font-medium text-slate-400">System Admin</p>
+          <p class="text-sm font-bold leading-none mb-1 dark:text-white">{{userName}}</p>
+          <p class="text-[11px] font-medium text-slate-400">{{userRole}}</p>
         </div>
         <div
           class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/40 rounded-xl overflow-hidden flex items-center justify-center p-1 border border-indigo-200 dark:border-indigo-800">
-          <img src="https://ui-avatars.com/api/?name=Alex+Rivera&background=6366f1&color=fff" alt="Avatar"
+          <img [src]="'https://ui-avatars.com/api/?name=' + (userName || 'User') + '&background=6366f1&color=fff'" [alt]="userName || 'Avatar'"
             class="w-full h-full rounded-lg object-cover">
         </div>
       </div>
