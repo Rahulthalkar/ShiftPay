@@ -3,8 +3,10 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DataService } from '../../shared/service/dataservice';
 import { UserService } from '../../shared/service/users.Service';
-import { ShiftType } from '../../shared/interface/models';
+import { ShiftType, UserRole } from '../../shared/interface/models';
 import { ToastrService } from '../../shared/service/toastr.service';
+import { authGuard } from '../../shared/guard/auth.guard';
+import { AuthService } from '../../shared/service/auth.service';
 
 
 interface SessionHistory {
@@ -29,8 +31,12 @@ interface SessionHistory {
 })
 export class WorkEntryComponent implements OnInit {
   workForm: FormGroup;
-
   workers: any[] = [];
+  userId: any;
+  userRoleId: number = 0;
+  fullName: string = '';
+  readonly UserRole = UserRole;
+  entryMode: 'self' | 'supervisor' = 'self';
 
   shiftTypes = Object.keys(ShiftType)
     .filter(key => isNaN(Number(key)))
@@ -39,39 +45,28 @@ export class WorkEntryComponent implements OnInit {
       name: key
     }));
 
-  history: SessionHistory[] = [
-    {
-      name: 'Rahul Sharma',
-      initials: 'RS',
-      avatarColor: 'bg-slate-100 text-slate-500',
-      date: 'Yesterday, Oct 23',
-      shiftType: 'FULL NIGHT',
-      shiftClass: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400',
-      duration: '8.5h',
-      amount: '₹2,975'
-    },
-    {
-      name: 'Anita Desai',
-      initials: 'AD',
-      avatarColor: 'bg-indigo-50 text-indigo-600',
-      date: 'Oct 23, 08:00 AM',
-      shiftType: 'DAY SHIFT',
-      shiftClass: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400',
-      duration: '9.0h',
-      amount: '₹3,150'
-    }
-  ];
+  history: SessionHistory[] = [];
 
   constructor(private dataService: DataService, private fb: FormBuilder,
     private userService: UserService,
     private toaster: ToastrService,
     private cdr: ChangeDetectorRef,
-    private location: Location
+    private location: Location,
+    private authService: AuthService
   ) {
+    const loggedInUser = this.authService.currentUserValue;
+    if (loggedInUser) {
+      this.userId = loggedInUser.id;
+      this.userRoleId = loggedInUser.roleId;
+      this.fullName = loggedInUser.firstName || loggedInUser.userName || '';
+    }
+
+    const todayStr = new Date().toISOString().split('T')[0];
+
     this.workForm = this.fb.group({
-      id: [0, Validators.required],
+      id: [this.userRoleId === UserRole.Worker ? this.userId : '', Validators.required],
       shiftType: ['', Validators.required],
-      date: [new Date().getDate(), Validators.required],
+      date: [todayStr, Validators.required],
       startTime: ['', Validators.required],
       endTime: ['', Validators.required],
       status: []
@@ -79,13 +74,22 @@ export class WorkEntryComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getAllWorkers();
+    if (this.userRoleId === UserRole.Worker) {
+      this.entryMode = 'self';
+      this.workers = [{
+        id: this.userId,
+        fullName: this.fullName
+      }];
+    } else {
+      this.entryMode = 'supervisor';
+      this.getWorkersBySupervisorId();
+    }
   }
 
-  getAllWorkers() {
-    this.userService.getAllUser().subscribe(
+  getWorkersBySupervisorId() {
+    this.userService.getWorkersBySupervisorId(this.userId).subscribe(
       (response) => {
-        console.log('Workers fetched successfully:', response);
+
         if (response && response.isSuccess && response.value) {
           this.workers = response.value;
         } else if (Array.isArray(response)) {
@@ -99,10 +103,16 @@ export class WorkEntryComponent implements OnInit {
   }
 
   markAttendance() {
+    if (this.workForm.invalid) {
+      this.workForm.markAllAsTouched();
+      this.toaster.error('Please fill in all required fields correctly.');
+      return;
+    }
+
     const formValue = this.workForm.value;
-    const selectedWorker = this.workers.find(w => w.id == formValue.id);
+    const currentUser = this.userId;
     const attendanceData = {
-      userId: formValue.id,
+      userId: formValue.id ?? currentUser,
       status: false,
       shiftType: formValue.shiftType,
       date: formValue.date,
@@ -128,13 +138,29 @@ export class WorkEntryComponent implements OnInit {
     });
   }
 
+  setEntryMode(mode: 'self' | 'supervisor') {
+    this.entryMode = mode;
+    if (mode === 'self') {
+      this.workForm.patchValue({
+        id: this.userId
+      });
+    } else {
+      this.workForm.patchValue({
+        id: this.workers[0]?.id || ''
+      });
+    }
+  }
+
   resetForm() {
+    const todayStr = new Date().toISOString().split('T')[0];
+    this.entryMode = this.userRoleId === UserRole.Worker ? 'self' : 'supervisor';
     this.workForm.reset({
-      userId: this.workers[0]?.id || 0,
-      shiftType: this.shiftTypes[3],
-      date: '2023-10-24',
-      startTime: '21:00',
-      endTime: '03:00'
+      id: this.entryMode === 'self' ? this.userId : (this.workers[0]?.id || ''),
+      shiftType: this.shiftTypes[0]?.id || '',
+      date: todayStr,
+      startTime: '',
+      endTime: '',
+      status: false
     });
   }
 }

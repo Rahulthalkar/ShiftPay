@@ -5,9 +5,10 @@
         class="flex-1 w-full max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-24 relative z-10">
 
         <!-- Left Side: Branding & Info -->
-        <div class="flex-1 w-full flex flex-col justify-center space-y-12">
+        <div class="flex-1 w-full flex flex-col justify-center space-y-12 hidden lg:block">
             <div class="space-y-4">
-                <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">Enterprise Payroll Intelligence</p>
+                <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">Enterprise
+                    Payroll Intelligence</p>
                 <h1 class="text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
                     Equitas Ledger</h1>
                 <p class="text-xl text-slate-600 dark:text-slate-400 font-medium leading-relaxed max-w-lg">
@@ -17,37 +18,66 @@
 
             <!-- Feature Cards -->
             <div class="flex flex-col gap-4 max-w-2xl">
-                
+
                 <!-- Card 1 -->
-                <div class="bg-slate-100/50 dark:bg-slate-900/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-xl shadow-sm flex items-start gap-5">
-                    <div class="w-10 h-10 shrink-0 rounded-lg bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <div
+                    class="bg-slate-100/50 dark:bg-slate-900/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-xl shadow-sm flex items-start gap-5">
+                    <div
+                        class="w-10 h-10 shrink-0 rounded-lg bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
                     </div>
                     <div>
-                        <h3 class="text-sm font-black text-slate-900 dark:text-white mb-1">Precision Shift Detection</h3>
-                        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">Advanced logic for automated recognition of Day, Night, and Double Night shifts to ensure compliant work hour tracking.</p>
+                        <h3 class="text-sm font-black text-slate-900 dark:text-white mb-1">Precision Shift Detection
+                        </h3>
+                        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">Advanced
+                            logic for automated recognition of Day, Night, and Double Night shifts to ensure compliant
+                            work hour tracking.</p>
                     </div>
                 </div>
 
                 <!-- Card 2 -->
-                <div class="bg-slate-100/50 dark:bg-slate-900/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-xl shadow-sm flex items-start gap-5">
-                    <div class="w-10 h-10 shrink-0 rounded-lg bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                <div
+                    class="bg-slate-100/50 dark:bg-slate-900/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-xl shadow-sm flex items-start gap-5">
+                    <div
+                        class="w-10 h-10 shrink-0 rounded-lg bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                            <line x1="3" y1="9" x2="21" y2="9" />
+                            <line x1="9" y1="21" x2="9" y2="9" />
+                        </svg>
                     </div>
                     <div>
-                        <h3 class="text-sm font-black text-slate-900 dark:text-white mb-1">Automated Salary Calculations</h3>
-                        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">Eliminate manual errors with hyper-accurate, automated processing of base pay, overtime, and specialized differentials.</p>
+                        <h3 class="text-sm font-black text-slate-900 dark:text-white mb-1">Automated Salary Calculations
+                        </h3>
+                        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">Eliminate
+                            manual errors with hyper-accurate, automated processing of base pay, overtime, and
+                            specialized differentials.</p>
                     </div>
                 </div>
 
                 <!-- Card 3 -->
-                <div class="bg-slate-100/50 dark:bg-slate-900/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-xl shadow-sm flex items-start gap-5">
-                    <div class="w-10 h-10 shrink-0 rounded-lg bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="m9 14 2 2 4-4"/></svg>
+                <div
+                    class="bg-slate-100/50 dark:bg-slate-900/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-800/60 p-5 rounded-xl shadow-sm flex items-start gap-5">
+                    <div
+                        class="w-10 h-10 shrink-0 rounded-lg bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                            <path d="m9 14 2 2 4-4" />
+                        </svg>
                     </div>
                     <div>
-                        <h3 class="text-sm font-black text-slate-900 dark:text-white mb-1">Transparent Attendance Logs</h3>
-                        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">Build worker trust through immutable, real-time access to attendance history and audit-ready reporting logs.</p>
+                        <h3 class="text-sm font-black text-slate-900 dark:text-white mb-1">Transparent Attendance Logs
+                        </h3>
+                        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">Build worker
+                            trust through immutable, real-time access to attendance history and audit-ready reporting
+                            logs.</p>
                     </div>
                 </div>
 
@@ -64,7 +94,7 @@
         </div>
 
         <!-- Right Side: Login Card -->
-        <div class="w-full max-w-md shrink-0">
+        <div class="w-full max-w-md shrink-0 mt-auto">
             <div
                 class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 p-10">
                 <div class="mb-8">
@@ -76,13 +106,20 @@
                 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
 
                     <!-- Error Message Display -->
-                    <div *ngIf="errorMessage" class="p-3.5 bg-red-50 dark:bg-red-950/30 border border-red-200/50 dark:border-red-900/50 rounded-lg flex items-center gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-red-500 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-                        <span class="text-xs font-bold text-red-600 dark:text-red-400 leading-snug">{{ errorMessage }}</span>
+                    <div *ngIf="errorMessage"
+                        class="p-3.5 bg-red-50 dark:bg-red-950/30 border border-red-200/50 dark:border-red-900/50 rounded-lg flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" class="text-red-500 shrink-0">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" x2="12" y1="8" y2="12" />
+                            <line x1="12" x2="12.01" y1="16" y2="16" />
+                        </svg>
+                        <span class="text-xs font-bold text-red-600 dark:text-red-400 leading-snug">{{ errorMessage
+                            }}</span>
                     </div>
 
                     <!-- Role Selector -->
-                    <div class="space-y-3">
+                    <!-- <div class="space-y-3">
                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Select Access
                             Role</label>
                         <div class="flex p-1 bg-slate-100 dark:bg-slate-800/60 rounded-lg">
@@ -96,10 +133,10 @@
                                 [class]="selectedRole === 'Worker' ? 'bg-white dark:bg-slate-700 shadow-sm text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'"
                                 class="flex-1 py-2.5 text-xs font-black rounded-md transition-all">Worker</button>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Username / Email -->
-                    <div class="space-y-2">
+                    <div class="space-y-3">
                         <label
                             class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Username
                             or Email address</label>

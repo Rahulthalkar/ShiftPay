@@ -6,3 +6,9 @@ export enum ShiftType {
   FullNight = 4,
   DoubleNight = 5
 }
+
+export enum UserRole {
+  Admin = 1,
+  Manager = 2,
+  Worker = 3
+}

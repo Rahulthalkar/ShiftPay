@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { admindashboardService } from '../../shared/service/admindashboard.service';
+import { Activity, AttendanceDetails, AuditLogResponse } from '../../shared/interface/AuditLogResponse';
 
 interface Stat {
   label: string;
@@ -9,13 +11,6 @@ interface Stat {
   color: string;
 }
 
-interface Activity {
-  user: { name: string; role: string; avatar: string; initial: string };
-  action: string;
-  entity: string;
-  timestamp: string;
-  status: 'SUCCESS' | 'PROCESSING' | 'FLAGGED';
-}
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -24,7 +19,7 @@ interface Activity {
   templateUrl: './dashboard-admin.html',
   styleUrl: './dashboard-admin.css',
 })
-export class DashboardAdmin {
+export class DashboardAdmin implements OnInit {
   stats: Stat[] = [
     { label: 'TOTAL WORKERS', value: '1,284', trend: '+4% vs LW', icon: 'users', color: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' },
     { label: 'MONTHLY PAYROLL (INR)', value: '4.2m INR', trend: '+4% vs LW', icon: 'credit-card', color: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' },
@@ -35,34 +30,85 @@ export class DashboardAdmin {
     { label: 'APPROVALS', value: '18', icon: 'clipboard-list', color: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' },
   ];
 
-  activities: Activity[] = [
-    {
-      user: { name: 'Sanya Malhotra', role: 'HR Manager', avatar: '', initial: 'SM' },
-      action: 'Modified Shift Rates',
-      entity: 'Payroll Constants',
-      timestamp: 'Today, 10:42 AM',
-      status: 'SUCCESS',
-    },
-    {
-      user: { name: 'Rahul Kapoor', role: 'System Admin', avatar: '', initial: 'RK' },
-      action: 'Bulk User Import',
-      entity: 'User Management',
-      timestamp: 'Today, 09:15 AM',
-      status: 'PROCESSING',
-    },
-    {
-      user: { name: 'James David', role: 'Security Lead', avatar: '', initial: 'JD' },
-      action: 'Security Policy Update',
-      entity: 'Settings',
-      timestamp: 'Yesterday, 04:50 PM',
-      status: 'SUCCESS',
-    },
-    {
-      user: { name: 'Vikram Patil', role: 'Junior Admin', avatar: '', initial: 'VP' },
-      action: 'Login Attempt Failure',
-      entity: 'Auth System',
-      timestamp: 'Yesterday, 11:20 AM',
-      status: 'FLAGGED',
-    },
-  ];
+  activities: Activity[] = [];
+  constructor(private adminDashboardService: admindashboardService,
+    private cdr: ChangeDetectorRef
+  ) { }
+  ngOnInit() {
+    this.getAllAuditLogs();
+  }
+  getAllAuditLogs() {
+
+    this.adminDashboardService.getAllAuditLogs()
+      .subscribe((response: any) => {
+
+        this.activities = response.value.map((item: AuditLogResponse) => {
+
+          let parsedValue: AttendanceDetails = {} as AttendanceDetails;
+
+          try {
+
+            parsedValue = item.newValue
+              ? JSON.parse(item.newValue)
+              : {} as AttendanceDetails;
+
+          } catch (error) {
+
+            console.warn('Invalid JSON:', item.newValue);
+
+            parsedValue = {
+              UserId: 0,
+              Date: '',
+              StartTime: '',
+              EndTime: '',
+              ShiftType: 0,
+              Salary: 0,
+              Status: false,
+              ApporveById: null,
+              Latitude: null,
+              Longitude: null,
+              ClockInTime: null,
+              ClockOutTime: null
+            };
+          }
+
+          return {
+
+            id: item.id,
+
+            user: {
+              name: `User ${item.changedBy}`,
+              role: 'Admin',
+              initial: `U${item.changedBy}`.charAt(0)
+            },
+
+            action: item.actionType,
+
+            entity: item.entityName,
+
+            timestamp: item.timestamp,
+
+            status:
+              item.actionType === 'Create'
+                ? 'SUCCESS'
+                : item.actionType === 'Update'
+                  ? 'PROCESSING'
+                  : 'FLAGGED',
+
+            details: parsedValue
+
+          } as Activity;
+        });
+        this.cdr.detectChanges();
+        console.log(this.activities);
+      });
+  }
+  // getAllAuditLogs() {
+  //   this.adminDashboardService.getAllAuditLogs().subscribe((response: any) => {
+  //     this.activities = response.value;
+  //     console.log(response.value);
+
+  //   });
+  // }
+
 }

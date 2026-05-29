@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using ShiftPay.DAL.Interface;
 using ShiftPay.Domain.Model;
 using ShiftPay.Domain.Tables;
@@ -33,6 +33,20 @@ namespace ShiftPay.DAL
                         CreatedBy = advanceModel.CreatedBy // Assuming the user creating the advance is the same as the one receiving it
                     };
                     dbContext.AdvancePayments.Add(advanceEntity);
+                    dbContext.SaveChanges();
+
+                    // Create Audit Log
+                    var auditLog = new tblAuditLog
+                    {
+                        EntityName = "AdvancePayment",
+                        EntityId = advanceEntity.AdvancePaymentId.ToString(),
+                        ActionType = "Create",
+                        OriginalValue = null,
+                        NewValue = System.Text.Json.JsonSerializer.Serialize(advanceModel),
+                        ChangedBy = advanceModel.CreatedBy.ToString(),
+                        Timestamp = DateTime.UtcNow
+                    };
+                    dbContext.AuditLogs.Add(auditLog);
                     dbContext.SaveChanges();
 
                     result.Value = true;

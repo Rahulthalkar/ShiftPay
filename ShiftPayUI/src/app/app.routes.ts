@@ -29,13 +29,13 @@ export const routes: Routes = [
     data: { roles: [1] }
   },
   {
-    path: 'create-user',
+    path: 'userlist/create-user',
     component: CreateUser,
     canActivate: [authGuard],
     data: { roles: [1] }
   },
   {
-    path: 'update-user/:id',
+    path: 'userlist/update-user/:id',
     component: CreateUser,
     canActivate: [authGuard],
     data: { roles: [1] }
@@ -74,7 +74,7 @@ export const routes: Routes = [
     // data: { roles: [2] }
   },
   {
-    path: 'advance-pay',
+    path: 'advancedlist/advance-pay',
     loadComponent: () => import('./pages/advance-pay/advance-pay').then(m => m.AdvancePay),
     canActivate: [authGuard],
     // data: { roles: [2] }

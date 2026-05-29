@@ -13,10 +13,16 @@ import { DataService } from '../../shared/service/dataservice';
 })
 export class AttendanceComponent implements OnInit {
   attendanceRecord: any[] = [];
+  paginatedRecords: any[] = [];
 
   totalShifts = 0;
   totalEarnings = '₹0.00';
   selectedMonth = 'May 2026';
+
+  // Pagination
+  currentPage = 1;
+  pageSize = 10;
+  totalPages = 1;
 
   constructor(private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.selectedMonth = new Date().toLocaleDateString('en-US', {
@@ -88,13 +94,77 @@ export class AttendanceComponent implements OnInit {
         this.totalShifts = this.attendanceRecord.length;
         const total = response.value.reduce((acc: number, curr: any) => acc + (curr.salary || 0), 0);
         this.totalEarnings = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        this.currentPage = 1;
+        this.updatePagination();
         this.cdr.detectChanges();
       } else {
         this.attendanceRecord = [];
+        this.paginatedRecords = [];
         this.totalShifts = 0;
+        this.totalPages = 1;
+        this.currentPage = 1;
         this.totalEarnings = '₹0.00';
         this.cdr.detectChanges();
       }
     });
+  }
+
+  updatePagination() {
+    this.totalPages = Math.max(1, Math.ceil(this.attendanceRecord.length / this.pageSize));
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedRecords = this.attendanceRecord.slice(startIndex, endIndex);
+  }
+
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePagination();
+  }
+
+  nextPage() {
+    this.goToPage(this.currentPage + 1);
+  }
+
+  prevPage() {
+    this.goToPage(this.currentPage - 1);
+  }
+
+  get startRecord(): number {
+    return this.attendanceRecord.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  get endRecord(): number {
+    return Math.min(this.currentPage * this.pageSize, this.attendanceRecord.length);
+  }
+
+  getPageNumbers(): (number | '...')[] {
+    const pages: (number | '...')[] = [];
+    const total = this.totalPages;
+    const current = this.currentPage;
+
+    if (total <= 7) {
+      for (let i = 1; i <= total; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (current > 3) pages.push('...');
+      const start = Math.max(2, current - 1);
+      const end = Math.min(total - 1, current + 1);
+      for (let i = start; i <= end; i++) pages.push(i);
+      if (current < total - 2) pages.push('...');
+      pages.push(total);
+    }
+
+    return pages;
+  }
+
+  onPageSizeChange(size: number | string) {
+    this.pageSize = Number(size);
+    this.currentPage = 1;
+    this.updatePagination();
   }
 }

@@ -65,7 +65,7 @@ namespace ShiftPay.BAL
                     return result;
                 }
 
-                // ✅ Duration Calculation (Cross Midnight Support)
+                // Duration Calculation (Cross Midnight Support)
                 double durationHrs = (attendanceRequestModel.EndTime - attendanceRequestModel.StartTime).TotalHours;
 
                 if (durationHrs < 0)
@@ -76,7 +76,7 @@ namespace ShiftPay.BAL
                 decimal dailyRate = workerResult.Value.DailyRate;
                 decimal salary = 0;
 
-                // ✅ Salary Calculation
+                // Salary Calculation
                 switch (attendanceRequestModel.ShiftType)
                 {
                     case ShiftType.Day:
@@ -106,7 +106,7 @@ namespace ShiftPay.BAL
 
                 attendanceRequestModel.Salary = salary;
 
-                // ✅ Get Existing Shifts
+                // Get Existing Shifts
                 var existingShiftResult = attendanceRepository
                     .IsExistShiftTypeAttendanceGetById(
                         attendanceRequestModel.UserId,
@@ -119,7 +119,7 @@ namespace ShiftPay.BAL
                     existingShifts = existingShiftResult.Value.Select(x => x.ShiftType.ToString()).ToList();
                 }
 
-                // ✅ Duplicate Check
+                // Duplicate Check
                 if (existingShifts.Contains(attendanceRequestModel.ShiftType.ToString()))
                 {
                     result.IsSuccess = false;
@@ -143,7 +143,7 @@ namespace ShiftPay.BAL
                     ShiftType.SecondHalfDay.ToString(),
                 };
 
-                // ✅ Only One Night Shift Allowed
+                // Only One Night Shift Allowed
                 if (nightShifts.Contains(attendanceRequestModel.ShiftType.ToString()) &&
                     existingShifts.Any(s => nightShifts.Contains(s)))
                 {
@@ -153,7 +153,7 @@ namespace ShiftPay.BAL
                     return result;
                 }
 
-                // ✅ Full Day Blocks Other Day Shifts
+                // Full Day Blocks Other Day Shifts
                 if (attendanceRequestModel.ShiftType == ShiftType.Day &&
                     existingShifts.Any(s => dayShifts.Contains(s)))
                 {
@@ -163,7 +163,7 @@ namespace ShiftPay.BAL
                     return result;
                 }
 
-                // ✅ Half Day Not Allowed If Full Day Exists
+                // Half Day Not Allowed If Full Day Exists
                 if ((attendanceRequestModel.ShiftType == ShiftType.FirstHalfDay ||
                      attendanceRequestModel.ShiftType == ShiftType.SecondHalfDay) &&
                      existingShifts.Contains(ShiftType.Day.ToString()))
@@ -174,7 +174,7 @@ namespace ShiftPay.BAL
                     return result;
                 }
 
-                // ✅ Save Attendance
+                // Save Attendance
                 var markResult = attendanceRepository.MarkAttendance(attendanceRequestModel);
 
                 if (markResult.IsSuccess)

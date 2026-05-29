@@ -108,5 +108,23 @@ namespace ShiftPay.BAL
                 return result;
             }
         }
+
+        public APIResult<List<UserListResponseModel>> GetWorkersBySupervisorId(int supervisorId)
+        {
+            var result = new APIResult<List<UserListResponseModel>>();
+            try
+            {
+                result = _userRepository.GetWorkersBySupervisorId(supervisorId);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Value = null;
+                result.ErrorMessageKey = "An error occurred while fetching the workers.";
+                result.ExceptionInfo = ex.Message;
+                return result;
+            }
+        }
     }
 }

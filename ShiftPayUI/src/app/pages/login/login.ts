@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { DataService } from '../../shared/service/dataservice';
 import { AuthService } from '../../shared/service/auth.service';
+import { ToastrService } from '../../shared/service/toastr.service';
 
 @Component({
   selector: 'app-login',
@@ -26,13 +27,13 @@ import { AuthService } from '../../shared/service/auth.service';
 export class LoginComponent {
   loginForm: FormGroup;
   showPassword = false;
-  selectedRole: 'Admin' | 'Manager' | 'Worker' = 'Admin';
   errorMessage = '';
 
   constructor(
     private router: Router,
     private dataservice: DataService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastr: ToastrService
   ) {
     this.loginForm = new FormGroup({
       username: new FormControl('', Validators.required),
@@ -40,11 +41,6 @@ export class LoginComponent {
       rememberMe: new FormControl(false)
     });
   }
-
-  setRole(role: 'Admin' | 'Manager' | 'Worker') {
-    this.selectedRole = role;
-  }
-
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
@@ -72,23 +68,12 @@ export class LoginComponent {
               this.router.navigate(['/approvalattendance']);
             } else if (roleId === 3) {
               this.router.navigate(['/workerdashboard']);
-            } else {
-              // Fallback routing based on UI selection if RoleId is custom
-              if (this.selectedRole === 'Admin') {
-                this.router.navigate(['/dashboard-admin']);
-              } else if (this.selectedRole === 'Manager') {
-                this.router.navigate(['/approvalattendance']);
-              } else {
-                this.router.navigate(['/workerdashboard']);
-              }
             }
-          } else {
-            this.errorMessage = res?.errorMessageKey || 'Invalid username or password.';
           }
         },
         error: (err: any) => {
-          console.error('Login error:', err);
-          this.errorMessage = err.error?.errorMessageKey || err.error?.exceptionInfo || 'Failed to authenticate. Please check your connection.';
+          this.toastr.error(err.error?.errorMessageKey || err.error?.exceptionInfo || 'Failed to authenticate. Please check your connection.');
+          //  this.errorMessage = err.error?.errorMessageKey || err.error?.exceptionInfo || 'Failed to authenticate. Please check your connection.';
         }
       });
     } else {

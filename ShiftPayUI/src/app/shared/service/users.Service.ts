@@ -33,5 +33,8 @@ export class UserService {
   getAllRoles(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/User/GetAllRoles`)
   }
+  getWorkersBySupervisorId(supervisorId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/User/GetWorkersBySupervisorId?supervisorId=${supervisorId}`);
+  }
 
 }

@@ -39,10 +39,25 @@ namespace ShiftPay.DAL
                     };
                     dbContext.Users.Add(userEntity);
                     dbContext.SaveChanges();
+
+                    // Create Audit Log
+                    var auditLog = new tblAuditLog
+                    {
+                        EntityName = "User",
+                        EntityId = userEntity.Id.ToString(),
+                        ActionType = "Create",
+                        OriginalValue = null,
+                        NewValue = System.Text.Json.JsonSerializer.Serialize(userModel),
+                        ChangedBy = userModel.CreatedBy.ToString(),
+                        Timestamp = DateTime.UtcNow
+                    };
+                    dbContext.AuditLogs.Add(auditLog);
+                    dbContext.SaveChanges();
+
                     result.Value = true;
                     result.IsSuccess = true;
                     result.ExceptionInfo = "success";
-                    
+
                     return result;
                 }
                 catch (Exception ex)
@@ -63,7 +78,7 @@ namespace ShiftPay.DAL
 
         public APIResult<List<UserListResponseModel>> GetAllUsers()
         {
-            using(var dbContext = new EmpDbEntities(connectionString))
+            using (var dbContext = new EmpDbEntities(connectionString))
             {
                 APIResult<List<UserListResponseModel>> result = new APIResult<List<UserListResponseModel>>();
                 try
@@ -83,7 +98,7 @@ namespace ShiftPay.DAL
                                      IsActive = user.IsActive,
                                      ManagerId = user.ManagerId
                                  }).ToList();
-                    if (users==null || users.Count == 0)
+                    if (users == null || users.Count == 0)
                     {
                         result.Value = null;
                         result.IsSuccess = false;
@@ -137,8 +152,8 @@ namespace ShiftPay.DAL
                         result.ErrorMessageKey = "UserNotFound";
                         return result;
                     }
-                     
-                   
+
+
                     result.Value = userEntity;
                     result.IsSuccess = true;
                     result.ExceptionInfo = "success";
@@ -157,7 +172,7 @@ namespace ShiftPay.DAL
 
         public APIResult<bool> UpdateUser(UserUpdateModel userModel)
         {
-            using(var dbContext = new EmpDbEntities(connectionString))
+            using (var dbContext = new EmpDbEntities(connectionString))
             {
                 APIResult<bool> result = new APIResult<bool>();
                 try
@@ -170,16 +185,45 @@ namespace ShiftPay.DAL
                         result.ErrorMessageKey = "UserNotFound";
                         return result;
                     }
-                    userEntity.Username = userModel.Username;                  
+
+                    // Save original state for audit logging
+                    var originalState = new
+                    {
+                        userEntity.Username,
+                        userEntity.RoleId,
+                        FullName = userEntity.Name,
+                        userEntity.DailyRate,
+                        userEntity.ProfileImageUrl,
+                        userEntity.PhoneNumber,
+                        userEntity.IsActive,
+                        userEntity.ManagerId
+                    };
+
+                    userEntity.Username = userModel.Username;
                     userEntity.RoleId = userModel.RoleId;
                     userEntity.Name = userModel.FullName;
                     userEntity.DailyRate = userModel.DailyRate;
                     userEntity.ProfileImageUrl = userModel.ProfileImageUrl;
                     userEntity.PhoneNumber = userModel.PhoneNumber;
                     userEntity.IsActive = userModel.IsActive;
-                    userEntity.ManagerId = userModel.ManagerId;   
-                    
+                    userEntity.ManagerId = userModel.ManagerId;
+
                     dbContext.SaveChanges();
+
+                    // Create Audit Log
+                    var auditLog = new tblAuditLog
+                    {
+                        EntityName = "User",
+                        EntityId = userEntity.Id.ToString(),
+                        ActionType = "Update",
+                        OriginalValue = System.Text.Json.JsonSerializer.Serialize(originalState),
+                        NewValue = System.Text.Json.JsonSerializer.Serialize(userModel),
+                        ChangedBy = userModel.CreatedBy.ToString(),
+                        Timestamp = DateTime.UtcNow
+                    };
+                    dbContext.AuditLogs.Add(auditLog);
+                    dbContext.SaveChanges();
+
                     result.Value = true;
                     result.IsSuccess = true;
                     result.ExceptionInfo = "success";
@@ -220,6 +264,52 @@ namespace ShiftPay.DAL
                     result.Value = null;
                     result.IsSuccess = false;
                     result.ErrorMessageKey = "ErrorRetrievingRoles";
+                    result.ExceptionInfo = ex.ToString();
+                    return result;
+                }
+            }
+        }
+
+        public APIResult<List<UserListResponseModel>> GetWorkersBySupervisorId(int supervisorId)
+        {
+            using (var dbContext = new EmpDbEntities(connectionString))
+            {
+                APIResult<List<UserListResponseModel>> result = new APIResult<List<UserListResponseModel>>();
+                try
+                {
+                    var workers = (from user in dbContext.Users
+                                   join trole in dbContext.Roles on user.RoleId equals trole.Id
+                                   where user.ManagerId == supervisorId
+                                   select new UserListResponseModel
+                                   {
+                                       Id = user.Id,
+                                       Username = user.Username,
+                                       RoleId = user.RoleId,
+                                       RoleName = trole.Role,
+                                       FullName = user.Name,
+                                       DailyRate = user.DailyRate,
+                                       ProfileImageUrl = user.ProfileImageUrl,
+                                       PhoneNumber = user.PhoneNumber,
+                                       IsActive = user.IsActive,
+                                       ManagerId = user.ManagerId
+                                   }).ToList();
+                    if (workers == null || workers.Count == 0)
+                    {
+                        result.Value = null;
+                        result.IsSuccess = false;
+                        result.ExceptionInfo = "";
+                        return result;
+                    }
+                    result.Value = workers;
+                    result.IsSuccess = true;
+                    result.ExceptionInfo = "success";
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    result.Value = null;
+                    result.IsSuccess = false;
+                    result.ErrorMessageKey = "ErrorRetrievingWorkers";
                     result.ExceptionInfo = ex.ToString();
                     return result;
                 }

@@ -334,6 +334,20 @@ namespace ShiftPay.DAL
                     dbContext.Attendances.Add(attendance);
                     dbContext.SaveChanges();
 
+                    // Create Audit Log
+                    var auditLog = new tblAuditLog
+                    {
+                        EntityName = "Attendance",
+                        EntityId = attendance.AttendanceId.ToString(),
+                        ActionType = "Create",
+                        OriginalValue = null,
+                        NewValue = System.Text.Json.JsonSerializer.Serialize(attendanceRequestModel),
+                        ChangedBy = attendanceRequestModel.UserId.ToString(),
+                        Timestamp = DateTime.UtcNow
+                    };
+                    dbContext.AuditLogs.Add(auditLog);
+                    dbContext.SaveChanges();
+
                     result.IsSuccess = true;
                     result.Value = attendance.AttendanceId.ToString(); ;
                     result.ExceptionInfo = "Attendance marked successfully.";
@@ -380,8 +394,24 @@ namespace ShiftPay.DAL
 
                     foreach (var attendance in attendances)
                     {
+                        var originalStatus = attendance.Status;
+                        var originalApprover = attendance.ApporveById;
+
                         attendance.Status = true;
                         attendance.ApporveById = model.ManagerId;
+
+                        // Create Audit Log for each approval
+                        var auditLog = new tblAuditLog
+                        {
+                            EntityName = "Attendance",
+                            EntityId = attendance.AttendanceId.ToString(),
+                            ActionType = "Approve",
+                            OriginalValue = $"Status: {originalStatus}, ApprovedBy: {originalApprover}",
+                            NewValue = $"Status: True, ApprovedBy: {model.ManagerId}",
+                            ChangedBy = model.ManagerId.ToString(),
+                            Timestamp = DateTime.UtcNow
+                        };
+                        dbContext.AuditLogs.Add(auditLog);
                     }
 
                     dbContext.SaveChanges();

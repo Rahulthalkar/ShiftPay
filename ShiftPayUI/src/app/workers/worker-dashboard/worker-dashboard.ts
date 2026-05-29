@@ -29,9 +29,11 @@ interface Advance {
   styleUrl: './worker-dashboard.css',
 })
 export class WorkerDashboard implements OnInit {
-  workerName: string = 'David';
-  dailyRate: number = 550;
+  workerlist: any[] = [];
+  selectedWorkerId: number = 0;
   currentDate: string = '';
+  isWorker: boolean = false;
+  loggedInUserId: number = 0;
 
   startDate: string = '2026-05-01';
   endDate: string = '2026-05-29';
@@ -72,15 +74,86 @@ export class WorkerDashboard implements OnInit {
   }
 
   ngOnInit() {
+    const loggedInUser = this.authService.currentUserValue;
+    this.isWorker = loggedInUser?.roleId === 3;
+    this.loggedInUserId = loggedInUser?.id || 0;
+
+    if (this.isWorker) {
+      this.selectedWorkerId = this.loggedInUserId;
+      // Fetch details of the current worker to populate the header
+      this.userService.getUserById(this.loggedInUserId).subscribe({
+        next: (res) => {
+          if (res && res.isSuccess && res.value) {
+            this.workerlist = [res.value];
+          } else {
+            this.workerlist = [{
+              id: this.loggedInUserId,
+              fullName: loggedInUser.firstName || loggedInUser.userName || 'Worker',
+              dailyRate: 0
+            }];
+          }
+          this.getWorkerDashboard();
+        },
+        error: (err) => {
+          console.error('Failed to fetch worker details:', err);
+          this.workerlist = [{
+            id: this.loggedInUserId,
+            fullName: loggedInUser.firstName || loggedInUser.userName || 'Worker',
+            dailyRate: 0
+          }];
+          this.getWorkerDashboard();
+        }
+      });
+    } else {
+      this.loadWorkers();
+    }
+  }
+
+  loadWorkers() {
+    const loggedInUser = this.authService.currentUserValue;
+    const roleId = loggedInUser?.roleId;
+    const userId = loggedInUser?.id || 0;
+
+     
+      // Manager: load workers supervised by this supervisor/manager
+      this.userService.getWorkersBySupervisorId(userId).subscribe({
+        next: (res) => {
+          this.workerlist = res.value || [];
+          
+          // Prepend himself (the manager) to the dropdown options
+          this.userService.getUserById(userId).subscribe({
+            next: (managerRes) => {
+              if (managerRes && managerRes.isSuccess && managerRes.value) {
+                this.workerlist.unshift(managerRes.value);
+              }
+              this.selectedWorkerId = userId;
+              this.getWorkerDashboard();
+            },
+            error: (err) => {
+              console.error('Failed to fetch manager details:', err);
+              this.selectedWorkerId = userId;
+              this.getWorkerDashboard();
+            }
+          });
+        },
+        error: (err) => {
+          console.error('Failed to fetch supervised workers:', err);
+        }
+      });
+    
+  }
+
+  onWorkerChange() {
+    this.selectedWorkerId = Number(this.selectedWorkerId);
     this.getWorkerDashboard();
   }
 
   getWorkerDashboard() {
-    const loggedInUser = this.authService.currentUserValue;
-    const userId = loggedInUser?.id || 2;
+    const userId = this.isWorker ? this.loggedInUserId : this.selectedWorkerId;
+    if (!userId) return;
 
     // Fetch dashboard statistics
-    this.dataService.getWorkerDashboard(2, this.startDate, this.endDate).subscribe({
+    this.dataService.getWorkerDashboard(userId, this.startDate, this.endDate).subscribe({
       next: (res: any) => {
         if (res && res.isSuccess && res.value) {
           const data = res.value;

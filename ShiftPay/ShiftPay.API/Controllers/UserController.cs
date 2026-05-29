@@ -93,5 +93,21 @@ namespace ShiftPay.API.Controllers
                 return BadRequest(result);
             }
         }
+
+        [HttpGet("GetWorkersBySupervisorId")]
+        public IActionResult GetWorkersBySupervisorId(int supervisorId)
+        {
+            {
+                var result = userService.GetWorkersBySupervisorId(supervisorId);
+                if (result.IsSuccess)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
+            }
+        }
     }
 }

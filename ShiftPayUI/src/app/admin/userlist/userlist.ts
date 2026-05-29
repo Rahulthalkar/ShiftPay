@@ -139,11 +139,11 @@ export class Userlist implements OnInit {
   }
 
   createUser() {
-    this.router.navigate(['/create-user']);
+    this.router.navigate(['userlist/create-user']);
   }
 
   getUserById(workerId: number) {
-    this.router.navigate(['/update-user', workerId]);
+    this.router.navigate(['userlist/update-user', workerId]);
   }
 
   deleteWorker(workerId: number) {

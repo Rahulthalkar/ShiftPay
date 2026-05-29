@@ -23,10 +23,12 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAdvanceRepository,AdvanceRepository>();
 builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AdvanceService>();
 builder.Services.AddScoped<AttendanceService>();
+builder.Services.AddScoped<AuditLogService>();
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
