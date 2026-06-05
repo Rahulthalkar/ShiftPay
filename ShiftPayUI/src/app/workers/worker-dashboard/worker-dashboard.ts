@@ -114,33 +114,33 @@ export class WorkerDashboard implements OnInit {
     const roleId = loggedInUser?.roleId;
     const userId = loggedInUser?.id || 0;
 
-     
-      // Manager: load workers supervised by this supervisor/manager
-      this.userService.getWorkersBySupervisorId(userId).subscribe({
-        next: (res) => {
-          this.workerlist = res.value || [];
-          
-          // Prepend himself (the manager) to the dropdown options
-          this.userService.getUserById(userId).subscribe({
-            next: (managerRes) => {
-              if (managerRes && managerRes.isSuccess && managerRes.value) {
-                this.workerlist.unshift(managerRes.value);
-              }
-              this.selectedWorkerId = userId;
-              this.getWorkerDashboard();
-            },
-            error: (err) => {
-              console.error('Failed to fetch manager details:', err);
-              this.selectedWorkerId = userId;
-              this.getWorkerDashboard();
+
+    // Manager: load workers supervised by this supervisor/manager
+    this.userService.getWorkersBySupervisorId(userId).subscribe({
+      next: (res) => {
+        this.workerlist = res.value || [];
+
+        // Prepend himself (the manager) to the dropdown options
+        this.userService.getUserById(userId).subscribe({
+          next: (managerRes) => {
+            if (managerRes && managerRes.isSuccess && managerRes.value) {
+              this.workerlist.unshift(managerRes.value);
             }
-          });
-        },
-        error: (err) => {
-          console.error('Failed to fetch supervised workers:', err);
-        }
-      });
-    
+            this.selectedWorkerId = userId;
+            this.getWorkerDashboard();
+          },
+          error: (err) => {
+            console.error('Failed to fetch manager details:', err);
+            this.selectedWorkerId = userId;
+            this.getWorkerDashboard();
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Failed to fetch supervised workers:', err);
+      }
+    });
+
   }
 
   onWorkerChange() {

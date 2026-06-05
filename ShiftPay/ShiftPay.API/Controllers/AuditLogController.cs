@@ -34,20 +34,5 @@ namespace ShiftPay.API.Controllers
                 return BadRequest(result);
             }
         }
-
-        [HttpGet]
-        [Route("GetAuditLogsByEntity")]
-        public IActionResult GetAuditLogsByEntity([FromQuery] string entityName, [FromQuery] string? entityId)
-        {
-            var result = _auditLogService.GetAuditLogsByEntity(entityName, entityId);
-            if (result.IsSuccess)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return BadRequest(result);
-            }
-        }
     }
 }

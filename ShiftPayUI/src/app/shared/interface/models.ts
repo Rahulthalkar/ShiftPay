@@ -12,3 +12,22 @@ export enum UserRole {
   Manager = 2,
   Worker = 3
 }
+export interface APIResult<T> {
+  value: T;
+  isSuccess: boolean;
+  errorMessageKey: string;
+  exceptionInfo: string;
+}
+
+export interface AdminDashboardStatsModel {
+  totalWorkers: number;
+  totalWorkersChangePercent: number;
+  monthlyPayroll: number;
+  monthlyPayrollChangePercent: number;
+  activeUsers: number;
+  pendingApprovalsCount: number;
+  approvedAttendancesCount: number;
+  totalAdvanceCount: number;
+  totalAdvanceAmount: number;
+  totalApprovalsCount: number;
+}

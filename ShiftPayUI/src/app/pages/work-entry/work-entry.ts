@@ -95,6 +95,7 @@ export class WorkEntryComponent implements OnInit {
         } else if (Array.isArray(response)) {
           this.workers = response;
         }
+        this.cdr.detectChanges();
       },
       (error) => {
         console.error('Error fetching workers:', error);
