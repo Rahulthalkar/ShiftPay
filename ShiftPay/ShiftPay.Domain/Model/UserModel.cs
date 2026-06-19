@@ -162,10 +162,16 @@ namespace ShiftPay.Domain.Model
 
 
     }
+    public class ResetCreationResult
+    {
+        public Guid ResetGuid { get; set; }
+        public string OTP { get; set; } = string.Empty;
+        public int UserId { get; set; }
+    }
     public class ResetPasswordReqestModel
     {
         public int UserId { get; set; }
-        public string Email { get; set; }
+        public string? Email { get; set; }
         public Guid ResetPasswordGuid { get; set; }        
         public string NewPassword { get; set; }
     }

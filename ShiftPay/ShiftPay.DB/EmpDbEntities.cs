@@ -53,7 +53,7 @@ namespace ShiftPay
             modelBuilder.Entity<tblEmailConfigurations>().HasData(
                 new tblEmailConfigurations {
                     Id = counter++,
-                    DisplayName = "ShiftType", 
+                    DisplayName = "ShiftPay", 
                     From = "rahulthalkar.akkomplish@gmail.com",
                     Host = "smtp.gmail.com",
                     Password = "mxkk siew pkfs mbkv",

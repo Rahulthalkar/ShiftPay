@@ -21,12 +21,20 @@ export function passwordMatchValidator(control: AbstractControl): ValidationErro
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './reset-password.html',
-  styles: []
+  styles: [`
+    :host ::ng-deep input[type="password"]::-ms-reveal,
+    :host ::ng-deep input[type="password"]::-ms-clear {
+      display: none;
+    }
+  `]
 })
 export class ResetPassword implements OnInit {
   isLoading = false;
   isValidating = true;
   isLinkValid = false;
+
+  showNewPassword = false;
+  showConfirmPassword = false;
 
   guid: string = '';
   userId: number = 0;

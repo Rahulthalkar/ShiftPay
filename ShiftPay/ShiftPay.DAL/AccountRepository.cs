@@ -19,18 +19,18 @@ namespace ShiftPay.DAL
             connectionString = Convert.ToString(configuration.GetSection("ConnectionStrings:DefaultConnection").Value);   
         }
 
-        public APIResult<bool> RequestPasswordReset(int userId, string email,string baseUrl)
+        public APIResult<ResetCreationResult> RequestPasswordReset(int userId, string email,string baseUrl)
         {
             using (var dbcontext = new EmpDbEntities(connectionString))
             {
-                var result = new APIResult<bool>();
+                var result = new APIResult<ResetCreationResult>();
                 try
                 {
                     // validate email format
                     if (!IsValidEmail(email))
                     {
                         result.IsSuccess = false;
-                        result.Value = false;
+                        result.Value = null;
                         result.ErrorMessageKey = "InvalidEmail";
                         result.ExceptionInfo = "Provided email is not valid.";
                         return result;
@@ -47,64 +47,64 @@ namespace ShiftPay.DAL
                         PasswordChangesGuid = guid,                      
                         IsUsed = false,
                         CreatedAt = DateTime.UtcNow,
-                        ExpiresAt = DateTime.UtcNow.AddMinutes(15)
+                        ExpiresAt = DateTime.UtcNow.AddMinutes(20)
                     };
 
                     dbcontext.Add(resetEntity);
                     dbcontext.SaveChanges();
 
                     // send email (best-effort)
-                    try
-                    {
-                        // read basic settings from configuration via connection string object is not available here; fallback to appsettings in Program-level send
-                        var smtpHost = "smtp.gmail.com";
-                        var smtpPort = 587;
-                        var smtpUser = "rahulthalkar.akkomplish@gmail.com";
-                        var smtpPass = "mxkk siew pkfs mbkv";
+                    //try
+                    //{
+                    //    // read basic settings from configuration via connection string object is not available here; fallback to appsettings in Program-level send
+                    //    var smtpHost = "smtp.gmail.com";
+                    //    var smtpPort = 587;
+                    //    var smtpUser = "rahulthalkar.akkomplish@gmail.com";
+                    //    var smtpPass = "mxkk siew pkfs mbkv";
 
-                        // try to read environment variables as a fallback
-                        smtpHost = System.Environment.GetEnvironmentVariable("SMTP_HOST") ?? smtpHost;
-                        var portStr = System.Environment.GetEnvironmentVariable("SMTP_PORT");
-                        if (!string.IsNullOrEmpty(portStr) && int.TryParse(portStr, out var p)) smtpPort = p;
+                    //    // try to read environment variables as a fallback
+                    //    smtpHost = System.Environment.GetEnvironmentVariable("SMTP_HOST") ?? smtpHost;
+                    //    var portStr = System.Environment.GetEnvironmentVariable("SMTP_PORT");
+                    //    if (!string.IsNullOrEmpty(portStr) && int.TryParse(portStr, out var p)) smtpPort = p;
 
-                        smtpUser = System.Environment.GetEnvironmentVariable("SMTP_USER") ?? smtpUser;
-                        smtpPass = System.Environment.GetEnvironmentVariable("SMTP_PASS") ?? smtpPass;
+                    //    smtpUser = System.Environment.GetEnvironmentVariable("SMTP_USER") ?? smtpUser;
+                    //    smtpPass = System.Environment.GetEnvironmentVariable("SMTP_PASS") ?? smtpPass;
 
-                        if (!string.IsNullOrEmpty(smtpHost))
-                        {
-                            using (var client = new System.Net.Mail.SmtpClient(smtpHost, smtpPort))
-                            {
-                                client.UseDefaultCredentials = false;
-                                client.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
-                                if (!string.IsNullOrEmpty(smtpUser))
-                                {
-                                    client.Credentials = new System.Net.NetworkCredential(smtpUser, smtpPass);
-                                }
-                                client.EnableSsl = true;
+                    //    if (!string.IsNullOrEmpty(smtpHost))
+                    //    {
+                    //        using (var client = new System.Net.Mail.SmtpClient(smtpHost, smtpPort))
+                    //        {
+                    //            client.UseDefaultCredentials = false;
+                    //            client.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+                    //            if (!string.IsNullOrEmpty(smtpUser))
+                    //            {
+                    //                client.Credentials = new System.Net.NetworkCredential(smtpUser, smtpPass);
+                    //            }
+                    //            client.EnableSsl = true;
 
-                                var msg = new System.Net.Mail.MailMessage();
-                                msg.To.Add(email);
-                                msg.Subject = "Password Reset OTP";
-                                msg.Body = $"Your OTP is: {otp}\nReset Link: {baseUrl}/reset-password/{guid}";
-                                msg.From = new System.Net.Mail.MailAddress(smtpUser ?? "no-reply@local");
+                    //            var msg = new System.Net.Mail.MailMessage();
+                    //            msg.To.Add(email);
+                    //            msg.Subject = "Password Reset OTP";
+                    //            msg.Body = $"Your OTP is: {otp}\nReset Link: {baseUrl}/reset-password/{guid}";
+                    //            msg.From = new System.Net.Mail.MailAddress(smtpUser ?? "no-reply@local");
 
-                                client.Send(msg);
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        // swallow email exceptions - operation still succeeds since reset record saved
-                    }
+                    //            client.Send(msg);
+                    //        }
+                    //    }
+                    //}
+                    //catch
+                    //{
+                    //    // swallow email exceptions - operation still succeeds since reset record saved
+                    //}
 
                     result.IsSuccess = true;
-                    result.Value = true;
+                    result.Value = new ResetCreationResult { ResetGuid = guid, OTP = otp, UserId = userId };
                     result.ExceptionInfo = "success";
                 }
                 catch (Exception ex)
                 {
                     result.IsSuccess = false;
-                    result.Value = false;
+                    result.Value = null;
                     result.ExceptionInfo = ex.Message;
                 }
 
@@ -250,11 +250,7 @@ namespace ShiftPay.DAL
                     {
                         Id = user.Id,
                         FirstName = user.Name,
-                        UserName = user.Username,
-                        IsActive = user.IsActive,
-                        Password = user.PasswordHash,
-                        Email = user.Username,
-                        UserTypeId = user.RoleId
+                        UserName = user.Username,                      
                     };
                     result.IsSuccess = true;
                     result.Value = userModel;
