@@ -1,12 +1,12 @@
 <div [class.dark]="isDarkMode" class="min-h-screen font-sans transition-colors duration-300">
   <!-- Auth Layout -->
   @if(isAuthRoute){
-    <router-outlet></router-outlet>
+  <router-outlet></router-outlet>
   }
 
   <!-- Main App Layout -->
   @if(!isAuthRoute){
-    <div class="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
+  <div class="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
 
     <!-- Sidebar -->
     <app-sidebar [isOpen]="isSidebarOpen" (closeSidebar)="toggleSidebar()"></app-sidebar>

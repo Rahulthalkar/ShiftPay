@@ -26,6 +26,18 @@ export class ApprovalAttendance implements OnInit {
   selectAll = false;
   currentTab: 'PENDING' | 'APPROVED' | 'REJECTED' = 'PENDING';
 
+  // Search & Filter State
+  searchQuery = '';
+  selectedShiftType = '';
+
+  // Sorting State
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
+  // Pagination State
+  currentPage = 1;
+  pageSize = 10;
+
   constructor(private dataService: DataService,
     private Cdt: ChangeDetectorRef,
     private authService: AuthService
@@ -101,7 +113,96 @@ export class ApprovalAttendance implements OnInit {
   }
 
   get filteredRecords() {
-    return this.records.filter(r => r.status === this.currentTab);
+    let filtered = this.records.filter(r => r.status === this.currentTab);
+
+    // Search filter
+    if (this.searchQuery.trim()) {
+      const q = this.searchQuery.toLowerCase();
+      filtered = filtered.filter(r =>
+        (r.name || '').toLowerCase().includes(q) ||
+        (r.workerId || '').toString().toLowerCase().includes(q)
+      );
+    }
+
+    // Shift type filter
+    if (this.selectedShiftType) {
+      filtered = filtered.filter(r =>
+        (r.shiftType || '').toLowerCase() === this.selectedShiftType.toLowerCase()
+      );
+    }
+
+    // Sorting
+    if (this.sortColumn) {
+      filtered = [...filtered].sort((a, b) => {
+        let valA = a[this.sortColumn];
+        let valB = b[this.sortColumn];
+
+        if (this.sortColumn === 'date') {
+          valA = new Date(valA).getTime();
+          valB = new Date(valB).getTime();
+        } else if (typeof valA === 'string') {
+          valA = valA.toLowerCase();
+          valB = (valB || '').toLowerCase();
+        }
+
+        if (valA < valB) return this.sortDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return this.sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return filtered;
+  }
+
+  sortBy(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    this.currentPage = 1;
+  }
+
+  onSearchChange() {
+    this.currentPage = 1;
+  }
+
+  onShiftTypeChange() {
+    this.currentPage = 1;
+  }
+
+  get pagedRecords() {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredRecords.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredRecords.length / this.pageSize);
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  get startIndex(): number {
+    return this.filteredRecords.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  get endIndex(): number {
+    const end = this.currentPage * this.pageSize;
+    return end > this.filteredRecords.length ? this.filteredRecords.length : end;
+  }
+
+  setPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  setTab(tab: 'PENDING' | 'APPROVED' | 'REJECTED') {
+    this.currentTab = tab;
+    this.currentPage = 1;
   }
 
   toggleSelectAll() {

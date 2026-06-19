@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DataService } from '../../shared/service/dataservice';
 import { AuthService } from '../../shared/service/auth.service';
 import { ToastrService } from '../../shared/service/toastr.service';
@@ -9,7 +9,7 @@ import { ToastrService } from '../../shared/service/toastr.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styles: [`
     :host { display: block; height: 100%; width: 100%; }

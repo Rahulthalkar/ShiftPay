@@ -21,7 +21,7 @@ export class App implements OnInit{
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       const url = event.urlAfterRedirects || event.url;
-      this.isAuthRoute = url.includes('/login');
+      this.isAuthRoute = url.includes('/login') || url.includes('/forgot-password') || url.includes('/reset-password');
       
       // Close sidebar on mobile after navigation
       if (window.innerWidth < 1024) {
@@ -38,7 +38,7 @@ export class App implements OnInit{
   ngOnInit() {
   
     const currentUrl = this.router.url;
-    this.isAuthRoute = currentUrl.includes('/login');
+    this.isAuthRoute = currentUrl.includes('/login') || currentUrl.includes('/forgot-password') || currentUrl.includes('/reset-password');
     
     this.checkScreenSize();
 

@@ -4,11 +4,19 @@ import { Userlist } from './admin/userlist/userlist';
 import { CreateUser } from './pages/create-user/create-user';
 import { LoginComponent } from './pages/login/login';
 import { authGuard } from './shared/guard/auth.guard';
+import { ResetPassword } from './pages/reset-password/reset-password';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/login' },
   { path: 'login', component: LoginComponent },
-
+  {
+    path: 'forgot-password',
+    loadComponent: () => import('./pages/forgot-password/forgot-password').then(m => m.ForgotPasswordComponent)
+  },
+  {
+    path: 'reset-password/:guid',
+    loadComponent: () => import('./pages/reset-password/reset-password').then(m => m.ResetPassword),
+  },
   // Admin Routes (Role 1)
   {
     path: 'dashboard-admin',
@@ -92,6 +100,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/settings/settings').then(m => m.SettingsComponent),
     canActivate: [authGuard]
   },
+
   {
     path: '**',
     redirectTo: '/login'

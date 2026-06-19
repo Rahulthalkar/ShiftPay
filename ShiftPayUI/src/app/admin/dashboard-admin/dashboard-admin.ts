@@ -32,12 +32,12 @@ export class DashboardAdmin implements OnInit {
 
   activities: any[] = [];
   currentPage = 1;
-  pageSize = 5;
+  pageSize = 10;
   constructor(private adminDashboardService: admindashboardService,
     private cdr: ChangeDetectorRef
   ) { }
   ngOnInit() {
-    this.getAllAuditLogs1();
+    this.getAllAuditLogs();
     this.getDashboardStats();
   }
 
@@ -92,76 +92,10 @@ export class DashboardAdmin implements OnInit {
       }
     });
   }
-  // getAllAuditLogs() {
 
-  //   this.adminDashboardService.getAllAuditLogs()
-  //     .subscribe((response: any) => {
-
-  //       this.activities = response.value.map((item: AuditLogResponse) => {
-
-  //         let parsedValue: AttendanceDetails = {} as AttendanceDetails;
-
-  //         try {
-
-  //           parsedValue = item.newValue
-  //             ? JSON.parse(item.newValue)
-  //             : {} as AttendanceDetails;
-
-  //         } catch (error) {
-
-  //           console.warn('Invalid JSON:', item.newValue);
-
-  //           parsedValue = {
-  //             UserId: 0,
-  //             Date: '',
-  //             StartTime: '',
-  //             EndTime: '',
-  //             ShiftType: 0,
-  //             Salary: 0,
-  //             Status: false,
-  //             ApporveById: null,
-  //             Latitude: null,
-  //             Longitude: null,
-  //             ClockInTime: null,
-  //             ClockOutTime: null
-  //           };
-  //         }
-
-  //         return {
-
-  //           id: item.id,
-
-  //           user: {
-  //             name: `User ${item.changedBy}`,
-  //             role: 'Admin',
-  //             initial: `U${item.changedBy}`.charAt(0)
-  //           },
-
-  //           action: item.actionType,
-
-  //           entity: item.entityName,
-
-  //           timestamp: item.timestamp,
-
-  //           status:
-  //             item.actionType === 'Create'
-  //               ? 'SUCCESS'
-  //               : item.actionType === 'Update'
-  //                 ? 'PROCESSING'
-  //                 : 'FLAGGED',
-
-  //           details: parsedValue
-
-  //         } as Activity;
-  //       });
-  //       this.cdr.detectChanges();
-  //       console.log(this.activities);
-  //     });
-  // }
-  getAllAuditLogs1() {
+  getAllAuditLogs() {
     this.adminDashboardService.getAllAuditLogs().subscribe((response: any) => {
       this.activities = response.value;
-      console.log(response.value);
       this.cdr.detectChanges();
 
     });
@@ -197,6 +131,21 @@ export class DashboardAdmin implements OnInit {
 
   isNextDisabled(): boolean {
     return !this.activities || this.currentPage * this.pageSize >= this.activities.length;
+  }
+
+  get totalPages(): number {
+    return this.activities ? Math.ceil(this.activities.length / this.pageSize) : 0;
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  setPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.cdr.detectChanges();
+    }
   }
 
   getTotalActivitiesCount(): number {

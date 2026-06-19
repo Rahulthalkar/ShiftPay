@@ -5,6 +5,7 @@ using ShiftPay.Domain.Tables;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace ShiftPay.DAL
 {
@@ -85,6 +86,8 @@ namespace ShiftPay.DAL
                 {
                     var users = (from user in dbContext.Users
                                  join trole in dbContext.Roles on user.RoleId equals trole.Id
+                                 join mgr in dbContext.Users on user.ManagerId equals mgr.Id into mgrJoin
+                                 from mgr in mgrJoin.DefaultIfEmpty()
                                  select new UserListResponseModel
                                  {
                                      Id = user.Id,
@@ -96,8 +99,11 @@ namespace ShiftPay.DAL
                                      ProfileImageUrl = user.ProfileImageUrl,
                                      PhoneNumber = user.PhoneNumber,
                                      IsActive = user.IsActive,
-                                     ManagerId = user.ManagerId
+                                     ManagerId = user.ManagerId,
+                                     ManagerName = mgr != null ? mgr.Name : string.Empty
                                  }).ToList();
+                    
+
                     if (users == null || users.Count == 0)
                     {
                         result.Value = null;
@@ -130,6 +136,8 @@ namespace ShiftPay.DAL
                 {
                     var userEntity = (from user in dbContext.Users
                                       join trole in dbContext.Roles on user.RoleId equals trole.Id
+                                      join mgr in dbContext.Users on user.ManagerId equals mgr.Id into mgrJoin
+                                      from mgr in mgrJoin.DefaultIfEmpty()
                                       where user.Id == id
                                       select new UserListResponseModel
                                       {
@@ -142,7 +150,8 @@ namespace ShiftPay.DAL
                                           ProfileImageUrl = user.ProfileImageUrl,
                                           PhoneNumber = user.PhoneNumber,
                                           IsActive = user.IsActive,
-                                          ManagerId = user.ManagerId
+                                          ManagerId = user.ManagerId,
+                                          ManagerName = mgr != null ? mgr.Name : string.Empty
                                       }).FirstOrDefault();
 
                     if (userEntity == null)
@@ -277,8 +286,11 @@ namespace ShiftPay.DAL
                 APIResult<List<UserListResponseModel>> result = new APIResult<List<UserListResponseModel>>();
                 try
                 {
+                    // left join to include manager name
                     var workers = (from user in dbContext.Users
                                    join trole in dbContext.Roles on user.RoleId equals trole.Id
+                                   join mgr in dbContext.Users on user.ManagerId equals mgr.Id into mgrJoin
+                                   from mgr in mgrJoin.DefaultIfEmpty()
                                    where user.ManagerId == supervisorId
                                    select new UserListResponseModel
                                    {
@@ -291,7 +303,8 @@ namespace ShiftPay.DAL
                                        ProfileImageUrl = user.ProfileImageUrl,
                                        PhoneNumber = user.PhoneNumber,
                                        IsActive = user.IsActive,
-                                       ManagerId = user.ManagerId
+                                       ManagerId = user.ManagerId,
+                                       ManagerName = mgr != null ? mgr.Name : string.Empty
                                    }).ToList();
                     if (workers == null || workers.Count == 0)
                     {

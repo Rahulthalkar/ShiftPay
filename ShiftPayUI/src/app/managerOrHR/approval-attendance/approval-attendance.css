@@ -61,3 +61,26 @@ input[type="checkbox"]:checked {
 button:active {
     transform: scale(0.98);
 }
+
+/* ─── Dark mode: input text & placeholder ─── */
+.dark input[type="text"] {
+    color: #e2e8f0;
+    background-color: #1e293b;
+}
+
+.dark input[type="text"]::placeholder {
+    color: #64748b;
+}
+
+/* ─── Dark mode: native select + option ─── */
+/* Tailwind dark: variants cannot style <option> — use real CSS */
+.dark select.shift-select {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    border-color: #334155;
+}
+
+.dark select.shift-select option {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}

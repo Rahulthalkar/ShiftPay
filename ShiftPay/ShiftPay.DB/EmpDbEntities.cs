@@ -16,6 +16,8 @@ namespace ShiftPay
         public DbSet<tblAuditLog> AuditLogs { get; set; }
         public DbSet<tblAdvancePayment> AdvancePayments { get; set; }       
         public DbSet<tblUserRole> Roles { get; set; }
+        public DbSet<tblReset> Resets { get; set; }
+        public DbSet<tblEmailConfigurations> EmailConfigurations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
@@ -31,25 +33,34 @@ namespace ShiftPay
              );
              counter = 1;
             modelBuilder.Entity<tblUser>().HasData(
-      new tblUser
-      {
-          Id = 1,
-          Name = "Admin",
-          PhoneNumber = "",
-          Username = "Admin",
-          PasswordHash = "$2a$11$WvEHgVrROnCezjp/2ie5JeERwQq/xVDd/pmN.2U9E5RCqDF58yRWy",
-          RoleId = 1,
-          ProfileImageUrl = "",
-          CreatedAt = new DateTime(2026, 1, 1), // ✅ FIXED
-          CreatedBy = 0,
-          DailyRate = 1200,
-          ManagerId = 0,
-          IsActive = true
-      }
-  );
-
-
+              new tblUser
+              {
+                  Id = 1,
+                  Name = "Admin",
+                  PhoneNumber = "",
+                  Username = "Admin",
+                  PasswordHash = "$2a$11$WvEHgVrROnCezjp/2ie5JeERwQq/xVDd/pmN.2U9E5RCqDF58yRWy",
+                  RoleId = 1,
+                  ProfileImageUrl = "",
+                  CreatedAt = new DateTime(2026, 1, 1),
+                  CreatedBy = 0,
+                  DailyRate = 1200,
+                  ManagerId = 0,
+                  IsActive = true
+              }
+             );
+            counter = 1;
+            modelBuilder.Entity<tblEmailConfigurations>().HasData(
+                new tblEmailConfigurations {
+                    Id = counter++,
+                    DisplayName = "ShiftType", 
+                    From = "rahulthalkar.akkomplish@gmail.com",
+                    Host = "smtp.gmail.com",
+                    Password = "mxkk siew pkfs mbkv",
+                    Port = 587,
+                    UserName = "rahulthalkar.akkomplish@gmail.com",
+                    UseSSL = true,
+            });
         }
-       
-    }
-} 
+}
+}

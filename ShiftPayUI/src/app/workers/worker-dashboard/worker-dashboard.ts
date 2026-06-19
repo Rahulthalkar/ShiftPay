@@ -35,8 +35,15 @@ export class WorkerDashboard implements OnInit {
   isWorker: boolean = false;
   loggedInUserId: number = 0;
 
-  startDate: string = '2026-05-01';
-  endDate: string = '2026-05-29';
+  startDate: string = (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
+  })();
+  endDate: string = (() => {
+    const d = new Date();
+    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(last).padStart(2, '0')}`;
+  })();
   activeFilter: 'month' | 'year' | 'custom' = 'month';
 
   stats = {
@@ -217,16 +224,9 @@ export class WorkerDashboard implements OnInit {
   }
 
   selectYearToDate() {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth();
-
-    const fiscalStartYear = currentMonth < 3 ? currentYear - 1 : currentYear;
-    const firstDay = `${fiscalStartYear}-04-01`;
-    const lastDay = `${fiscalStartYear + 1}-03-31`;
-
-    this.startDate = firstDay;
-    this.endDate = lastDay;
+    const currentYear = new Date().getFullYear();
+    this.startDate = `${currentYear}-01-01`;
+    this.endDate = `${currentYear}-12-31`;
     this.activeFilter = 'year';
     this.getWorkerDashboard();
   }
@@ -241,5 +241,6 @@ export class WorkerDashboard implements OnInit {
   onFilter() {
     this.activeFilter = 'custom';
     this.getWorkerDashboard();
+    this.cdr.detectChanges();
   }
 }

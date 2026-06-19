@@ -14,6 +14,8 @@ namespace ShiftPay.DAL
         public DbSet<tblAuditLog> AuditLogs { get; set; }
         public DbSet<tblAdvancePayment> AdvancePayments { get; set; }
         public DbSet<tblUserRole> Roles { get; set; }
+        public DbSet<tblReset> Resets { get; set; }
+        public DbSet<tblEmailConfigurations> EmailConfigurations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)   
         {

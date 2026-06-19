@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { DataService } from '../../shared/service/dataservice';
+import { ToastrService } from '../../shared/service/toastr.service';
 
 @Component({
   selector: 'app-settings',
@@ -16,7 +18,7 @@ export class SettingsComponent implements OnInit {
   showCurrent = false;
   showNew = false;
   showConfirm = false;
-  
+
   showError = false;
   errorMessage = '';
 
@@ -27,13 +29,15 @@ export class SettingsComponent implements OnInit {
     { text: 'At least one special character (!@#$)', met: false }
   ];
 
-  lastChanged = 'October 14, 2023 • 09:42 AM';
+  lastChanged = '';
 
-  constructor() {
+  constructor(private dataService: DataService,
+    private toastr: ToastrService,) {
+
     this.passwordForm = new FormGroup({
       currentPassword: new FormControl('', Validators.required),
       newPassword: new FormControl('', [
-        Validators.required, 
+        Validators.required,
         Validators.minLength(8),
         Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$]).*$/)
       ]),
@@ -72,15 +76,29 @@ export class SettingsComponent implements OnInit {
   onSubmit() {
     if (this.passwordForm.valid) {
       const current = this.passwordForm.get('currentPassword')?.value;
-      if (current !== 'correctpassword') {
-        this.showError = true;
-        this.errorMessage = 'The current password you entered is incorrect. Please try again.';
-      } else {
-        this.showError = false;
-        alert('Password updated successfully!');
-        this.passwordForm.reset();
-        this.lastChanged = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-      }
+      let userId = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+      let payload = {
+        userId: userId.id,
+        OldPassword: this.passwordForm.get('currentPassword')?.value,
+        NewPassword: this.passwordForm.get('newPassword')?.value,
+        confirmPassword: this.passwordForm.get('confirmPassword')?.value
+      };
+      this.dataService.changePassword(payload).subscribe({
+        next: (res: any) => {
+          if (res.isSuccess) {
+            this.toastr.success('Password changed successfully');
+            this.passwordForm.reset();
+            this.lastChanged = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+          } else {
+            alert(res.message);
+          }
+        },
+        error: (err) => {
+          this.showError = true;
+          this.toastr.error("The current password you entered is incorrect. Please try again.");
+          this.errorMessage = 'The current password you entered is incorrect. Please try again.';
+        }
+      })
     } else {
       this.passwordForm.markAllAsTouched();
     }

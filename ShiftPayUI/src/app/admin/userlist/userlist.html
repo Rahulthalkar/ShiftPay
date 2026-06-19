@@ -89,16 +89,13 @@
               Worker Name</th>
             <th
               class="px-6 py-5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">
-              Worker ID</th>
-            <th
-              class="px-6 py-5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">
               Daily Rate (₹)</th>
             <th
               class="px-6 py-5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">
-              Total Shifts</th>
+              Manager</th>
             <th
               class="px-6 py-5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center">
-              Last Entry</th>
+              Phone Number</th>
             <th
               class="px-8 py-5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">
               Actions</th>
@@ -122,20 +119,14 @@
                 </div>
               </div>
             </td>
-            <td class="px-6 py-6 text-center">
-              <span
-                class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 rounded-lg text-[10px] font-black uppercase tracking-tight border border-transparent dark:border-slate-700">
-                {{worker.id}}
-              </span>
-            </td>
             <td class="px-6 py-6 text-center font-black text-sm text-indigo-600 dark:text-indigo-400">
               ₹ {{worker.dailyRate}}
             </td>
             <td class="px-6 py-6 text-center">
-              <span class="text-sm font-black text-slate-800 dark:text-white">{{worker.totalShifts}}</span>
+              <span class="text-sm font-black text-slate-800 dark:text-white">{{worker.managerName}}</span>
             </td>
             <td class="px-6 py-6 text-center text-sm text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap">
-              {{worker.lastEntry}}
+              {{worker.phoneNumber}}
             </td>
             <td class="px-8 py-6 text-right whitespace-nowrap">
               <div class="flex items-center justify-end gap-2">

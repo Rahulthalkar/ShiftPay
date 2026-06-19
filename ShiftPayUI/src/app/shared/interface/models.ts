@@ -31,3 +31,15 @@ export interface AdminDashboardStatsModel {
   totalAdvanceAmount: number;
   totalApprovalsCount: number;
 }
+
+export interface ResetRequestModel {
+  email: string;
+  baseUrl: string;
+}
+
+export interface ResetPasswordModel {
+  email: string;
+  otp: string;
+  newPassword: string;
+  confirmPassword: string;
+}

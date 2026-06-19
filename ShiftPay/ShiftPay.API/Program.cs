@@ -25,6 +25,7 @@ builder.Services.AddScoped<IAdvanceRepository,AdvanceRepository>();
 builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AdvanceService>();
@@ -155,6 +156,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//app.Use(async (context, next) =>
+//{
+//    context.Response.Headers["Content-Security-Policy"] =
+//        "default-src 'self'; " +
+//        "script-src 'self' https://cdn.jsdelivr.net; " +
+//        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+//        "font-src 'self' https://fonts.gstatic.com; " +
+//        "connect-src 'self' https://cloud.flowiseai.com; " +
+//        "img-src 'self' data:;"+
+//        "frame-ancestors 'none';";
+
+//    await next();
+//});
 
 app.UseHttpsRedirection();
 
@@ -164,5 +178,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+//app.UseHsts();
 
 app.Run();

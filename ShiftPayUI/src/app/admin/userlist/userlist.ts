@@ -20,6 +20,7 @@ interface Worker {
   avatarColor: string;
   totalShifts: number;
   lastEntry: string;
+  managerName: string
 }
 
 @Component({
@@ -35,7 +36,7 @@ export class Userlist implements OnInit {
 
   // Pagination State
   currentPage = 1;
-  pageSize = 4;
+  pageSize = 10;
 
   router = inject(Router);
   userService = inject(UserService);

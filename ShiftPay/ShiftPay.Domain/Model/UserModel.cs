@@ -23,7 +23,7 @@ namespace ShiftPay.Domain.Model
     public class UserUpdateModel
     {
         public int Id { get; set; }
-        public string Username { get; set; } = string.Empty;        
+        public string Username { get; set; } = string.Empty;
         public int RoleId { get; set; }
         public string FullName { get; set; }
         public decimal DailyRate { get; set; }
@@ -31,23 +31,23 @@ namespace ShiftPay.Domain.Model
         public string? PhoneNumber { get; set; }
         public bool IsActive { get; set; }
         public int? ManagerId { get; set; }
-         public int CreatedBy { get; set; }
+        public int CreatedBy { get; set; }
         //public int UpdatedBy { get; set; }
     }
     public class UserResponseModel
     {
-        public string Username { get; set; } 
+        public string Username { get; set; }
         public int RoleId { get; set; }
         public string FullName { get; set; }
-        public decimal DailyRate { get; set; }      
+        public decimal DailyRate { get; set; }
         public string? PhoneNumber { get; set; }
-     
+
     }
 
     public class UserListResponseModel
     {
         public int Id { get; set; }
-        public string Username { get; set; } 
+        public string Username { get; set; }
         public int RoleId { get; set; }
         public string RoleName { get; set; }
         public string FullName { get; set; }
@@ -56,12 +56,13 @@ namespace ShiftPay.Domain.Model
         public string? PhoneNumber { get; set; }
         public bool IsActive { get; set; }
         public int? ManagerId { get; set; }
+        public string ManagerName { get; set; }
     }
     public enum ShiftType
     {
         Day,
         FirstHalfDay,
-        SecondHalfDay,      
+        SecondHalfDay,
         HalfNight,
         FullNight,
         DoubleNight
@@ -149,5 +150,40 @@ namespace ShiftPay.Domain.Model
     {
         public int Id { get; set; }
         public string RoleName { get; set; }
-    }      
+    }
+
+
+    public class ResetPasswordDto
+    {
+        public int UserId { get; set; }
+        public string email { get; set; }
+        public string OTP { get; set; }
+        public DateTime CreatedDate { get; set; }
+
+
+    }
+    public class ResetPasswordReqestModel
+    {
+        public int UserId { get; set; }
+        public string Email { get; set; }
+        public Guid ResetPasswordGuid { get; set; }        
+        public string NewPassword { get; set; }
+    }
+    public class ResetReqestModel
+    {
+       
+        public string Email { get; set; }    
+
+        public string? BaseUrl { get; set; }
+    }
+
+    public class ChangePasswordReqest
+    {
+        public int UserId { get; set; }
+        public string OldPassword { get; set; }
+        public string NewPassword { get; set; }
+        public DateTime CreatedDate { get; set; }
+
+
+    }
 }

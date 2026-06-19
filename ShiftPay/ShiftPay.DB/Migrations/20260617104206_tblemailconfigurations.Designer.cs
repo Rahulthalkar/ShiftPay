@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShiftPay;
 
@@ -11,9 +12,11 @@ using ShiftPay;
 namespace ShiftPay.DB.Migrations
 {
     [DbContext(typeof(EmpDbEntities))]
-    partial class EmpDbEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20260617104206_tblemailconfigurations")]
+    partial class tblemailconfigurations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,11 +189,11 @@ namespace ShiftPay.DB.Migrations
                             DisplayName = "ShiftType",
                             From = "rahulthalkar.akkomplish@gmail.com",
                             Host = "smtp.gmail.com",
-                            Password = "mxkk siew pkfs mbkv",
+                            Password = "mxkksiewpkfsmbkv",
                             Port = 587,
                             UseSSL = true,
                             UseStartTls = false,
-                            UserName = "rahulthalkar.akkomplish@gmail.com"
+                            UserName = ""
                         });
                 });
 
@@ -211,7 +214,7 @@ namespace ShiftPay.DB.Migrations
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("PasswordChangesGuid")
+                    b.Property<Guid>("PasswordChangesUuid")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("UserId")

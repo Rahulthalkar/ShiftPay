@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShiftPay;
 
@@ -11,9 +12,11 @@ using ShiftPay;
 namespace ShiftPay.DB.Migrations
 {
     [DbContext(typeof(EmpDbEntities))]
-    partial class EmpDbEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20260619052139_tblupdates")]
+    partial class tblupdates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

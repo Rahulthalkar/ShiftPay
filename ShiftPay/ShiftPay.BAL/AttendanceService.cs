@@ -80,9 +80,10 @@ namespace ShiftPay.BAL
                 switch (attendanceRequestModel.ShiftType)
                 {
                     case ShiftType.Day:
-                        salary = durationHrs < 9
-                            ? (dailyRate / 9m) * (decimal)durationHrs
-                            : dailyRate;
+                        //salary = durationHrs < 9
+                        //    ? (dailyRate / 9m) * (decimal)durationHrs
+                        //    : dailyRate;
+                        salary=dailyRate; // Assuming full day rate for any duration of day shift, adjust as needed
                         break;
 
                     case ShiftType.FirstHalfDay:

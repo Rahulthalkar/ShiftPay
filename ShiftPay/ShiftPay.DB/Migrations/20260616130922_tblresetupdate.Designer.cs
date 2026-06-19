@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShiftPay;
 
@@ -11,9 +12,11 @@ using ShiftPay;
 namespace ShiftPay.DB.Migrations
 {
     [DbContext(typeof(EmpDbEntities))]
-    partial class EmpDbEntitiesModelSnapshot : ModelSnapshot
+    [Migration("20260616130922_tblresetupdate")]
+    partial class tblresetupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,57 +146,6 @@ namespace ShiftPay.DB.Migrations
                     b.ToTable("AuditLogs");
                 });
 
-            modelBuilder.Entity("ShiftPay.Domain.Tables.tblEmailConfigurations", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("From")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Host")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Port")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("UseSSL")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("UseStartTls")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EmailConfigurations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DisplayName = "ShiftType",
-                            From = "rahulthalkar.akkomplish@gmail.com",
-                            Host = "smtp.gmail.com",
-                            Password = "mxkk siew pkfs mbkv",
-                            Port = 587,
-                            UseSSL = true,
-                            UseStartTls = false,
-                            UserName = "rahulthalkar.akkomplish@gmail.com"
-                        });
-                });
-
             modelBuilder.Entity("ShiftPay.Domain.Tables.tblReset", b =>
                 {
                     b.Property<int>("Id")
@@ -211,7 +163,7 @@ namespace ShiftPay.DB.Migrations
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("PasswordChangesGuid")
+                    b.Property<Guid>("PasswordChangesUuid")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("UserId")

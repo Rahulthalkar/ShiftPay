@@ -16,7 +16,8 @@
                 <div class="space-y-2">
                     <h1 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight md:leading-none">
                         Welcome,<br>
-                        <span class="text-emerald-400 drop-shadow-sm lowercase">{{workerlist.find(w => w.id == selectedWorkerId)?.fullName}}</span>
+                        <span class="text-emerald-400 drop-shadow-sm lowercase">{{workerlist.find(w => w.id ==
+                            selectedWorkerId)?.fullName}}</span>
                     </h1>
                     <p class="text-slate-400 text-xs md:text-sm font-medium">Your attendance and salary dashboard.</p>
                 </div>
@@ -37,7 +38,8 @@
                     class="bg-white/5 backdrop-blur-xl p-8 rounded-md border border-white/10 shadow-2xl text-center md:text-left min-w-[240px]">
                     <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">My Daily Rate</p>
                     <div class="flex items-baseline gap-1 justify-center md:justify-start">
-                        <span class="text-4xl font-black text-white">₹{{workerlist.find(w => w.id == selectedWorkerId)?.dailyRate}}</span>
+                        <span class="text-4xl font-black text-white">₹{{workerlist.find(w => w.id ==
+                            selectedWorkerId)?.dailyRate}}</span>
                         <span class="text-slate-500 text-xs font-bold">/Day</span>
                     </div>
                 </div>
@@ -58,15 +60,18 @@
                 to Date (Apr - Mar)</button>
         </div>
         <div *ngIf="!isWorker" class="flex items-center gap-3">
-            <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Select Worker:</span>
+            <span class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Select
+                Worker:</span>
             <div class="relative flex items-center">
                 <select name="workerSelect" id="workerSelect" [(ngModel)]="selectedWorkerId" (change)="onWorkerChange()"
                     class="appearance-none pr-10 pl-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-black text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 leading-none">
                     <option *ngFor="let worker of workerlist" [value]="worker.id">{{worker.fullName}}</option>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 dark:text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m6 9 6 6 6-6"/>
+                <div
+                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 dark:text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m6 9 6 6 6-6" />
                     </svg>
                 </div>
             </div>
@@ -74,7 +79,7 @@
 
     </div>
     <div class="flex-1 flex flex-col md:flex-row gap-4 w-full">
-        <div class="grid grid-cols-2 gap-4 flex-1">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 flex-1">
             <div class="space-y-2">
                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-2">Start
                     Date</label>
@@ -295,7 +300,8 @@
 
         </div>
         <!-- Calendar: Operational Lifecycle -->
-        <app-calendar [startDate]="startDate" [workEntries]="rawWorkEntries" (dateRangeChange)="onDateRangeChanged($event)"></app-calendar>
+        <app-calendar [startDate]="startDate" [workEntries]="rawWorkEntries"
+            (dateRangeChange)="onDateRangeChanged($event)"></app-calendar>
     </div>
 
 </div>
