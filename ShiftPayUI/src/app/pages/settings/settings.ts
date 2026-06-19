@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { DataService } from '../../shared/service/dataservice';
@@ -32,7 +32,8 @@ export class SettingsComponent implements OnInit {
   lastChanged = '';
 
   constructor(private dataService: DataService,
-    private toastr: ToastrService,) {
+    private toastr: ToastrService,
+    private location: Location) {
 
     this.passwordForm = new FormGroup({
       currentPassword: new FormControl('', Validators.required),
@@ -103,4 +104,8 @@ export class SettingsComponent implements OnInit {
       this.passwordForm.markAllAsTouched();
     }
   }
+  onCancel() {
+    this.location.back();
+  }
+
 }
