@@ -64,5 +64,52 @@ namespace ShiftPay.API.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public IActionResult ForgotPassword(ResetReqestModel resetReqestModel)
+        {
+            var result = _accountService.ForgotPassword(resetReqestModel);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpPost]
+        [Route("IsValidateResetPasswordGUID")]
+        public IActionResult IsValidateResetPasswordGUID(Guid guid)
+        {
+            var result = _accountService.IsValidateResetPasswordGUID(guid);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpPost]
+        [Route("ResetPassword")]
+        public IActionResult ResetPassword(ResetPasswordReqestModel resetPasswordReqest)
+        {
+            var result = _accountService.ResetPassword(resetPasswordReqest);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost]
+        [Route("ChangePassword")]
+        public IActionResult ChangePassword(ChangePasswordReqest changePassword)
+        {
+            var result = _accountService.ChangePassword(changePassword);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
     }
+   
 }
