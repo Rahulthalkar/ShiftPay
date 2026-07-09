@@ -20,6 +20,84 @@ namespace ShiftPay.BAL
             this.userRepository = userRepository;
         }
 
+        public APIResult<byte[]> ExportMonthlyAttendance(int year, int month)
+        {
+            var result = new APIResult<byte[]>();
+            try
+            {
+                var attendancesResult = attendanceRepository.GetAllAttendances();
+                if (!attendancesResult.IsSuccess || attendancesResult.Value == null)
+                {
+                    result.IsSuccess = false;
+                    result.ErrorMessageKey = attendancesResult.ErrorMessageKey ?? "ErrorRetrievingAttendances";
+                    result.ExceptionInfo = attendancesResult.ExceptionInfo;
+                    return result;
+                }
+
+                var usersResult = userRepository.GetAllUsers();
+                var users = new List<Domain.Model.UserListResponseModel>();
+                if (usersResult != null && usersResult.IsSuccess && usersResult.Value != null)
+                {
+                    users = usersResult.Value;
+                }
+
+                var filtered = attendancesResult.Value
+                    .Where(a => a.Date.Year == year && a.Date.Month == month)
+                    .OrderBy(a => a.UserId).ThenBy(a => a.Date)
+                    .ToList();
+
+                var sb = new System.Text.StringBuilder();
+                // CSV header
+                sb.AppendLine("UserId,Username,Name,Date,ShiftType,StartTime,EndTime,Salary,Status,ClockIn,ClockOut");
+
+                foreach (var a in filtered)
+                {
+                    var user = users.FirstOrDefault(u => u.Id == a.UserId);
+                    var username = user?.Username ?? string.Empty;
+                    var name = user?.FullName ?? string.Empty;
+                    var date = a.Date.ToString("yyyy-MM-dd");
+                    var start = a.StartTime.ToString();
+                    var end = a.EndTime.ToString();
+                    var salary = a.Salary.ToString("F2");
+                    var status = a.Status ? "APPROVED" : "PENDING";
+                    var clockIn = a.ClockInTime.HasValue ? a.ClockInTime.Value.ToString("s") : string.Empty;
+                    var clockOut = a.ClockOutTime.HasValue ? a.ClockOutTime.Value.ToString("s") : string.Empty;
+
+                    // escape commas by wrapping fields in quotes if necessary
+                    string Escape(string s) => s != null && s.Contains(",") ? '"' + s.Replace("\"", "\"\"") + '"' : s;
+
+                    sb.AppendLine(string.Join(",",
+                        a.UserId,
+                        Escape(username),
+                        Escape(name),
+                        date,
+                        a.ShiftType.ToString(),
+                        start,
+                        end,
+                        salary,
+                        status,
+                        Escape(clockIn),
+                        Escape(clockOut)
+                    ));
+                }
+
+                var csv = sb.ToString();
+                var bytes = System.Text.Encoding.UTF8.GetBytes(csv);
+                result.IsSuccess = true;
+                result.Value = bytes;
+                result.ExceptionInfo = "success";
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Value = null;
+                result.ErrorMessageKey = "ErrorExportingAttendance";
+                result.ExceptionInfo = ex.Message;
+                return result;
+            }
+        }
+
         public APIResult<List<AttendanceModel>> GetAttendancesByUserIdAsync(int userId)
         {
             APIResult<List<AttendanceModel>> result = new APIResult<List<AttendanceModel>>();

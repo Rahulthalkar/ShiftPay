@@ -15,6 +15,7 @@ namespace ShiftPay.DAL.Interface
       
         public APIResult<List<SupervisorWorkerModel>> GetAllWorkerBySupervisorId(int supervisorId);
         public APIResult<string> ApprovalAttendanceByManagerBatch(ApprovalBatchModel model);
+        public APIResult<List<AttendanceModel>> GetAttendancesByMonth(int year, int month);
 
     }
 }

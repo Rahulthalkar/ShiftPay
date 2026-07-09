@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShiftPay.BAL;
@@ -7,6 +8,7 @@ namespace ShiftPay.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AttendanceController : ControllerBase
     {
         private readonly IConfiguration configuration;
@@ -83,6 +85,19 @@ namespace ShiftPay.API.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+
+        [HttpGet("ExportMonthlyAttendance")]
+        public IActionResult ExportMonthlyAttendance(int year, int month)
+        {
+            var result = attendanceService.ExportMonthlyAttendance(year, month);
+            if (!result.IsSuccess || result.Value == null)
+            {
+                return BadRequest(result);
+            }
+
+            var fileName = $"attendance_{year}_{month:00}.csv";
+            return File(result.Value, "text/csv", fileName);
         }
     }
 }

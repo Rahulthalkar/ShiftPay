@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShiftPay.BAL;
@@ -7,6 +8,7 @@ namespace ShiftPay.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IConfiguration configuration;
@@ -19,6 +21,7 @@ namespace ShiftPay.API.Controllers
 
         [HttpPost]
         [Route("CreateUser")]
+        [Authorize(Roles = "1")]
         public IActionResult CreateUser(UserRequestModel userModel)
         {
             var result = userService.CreateUser(userModel);
@@ -35,6 +38,7 @@ namespace ShiftPay.API.Controllers
 
         [HttpPost]
         [Route("UpdateUser")]
+        [Authorize(Roles = "1")]
         public IActionResult UpdateUser(UserUpdateModel userModel)
         {
             var result = userService.UpdateUser(userModel);

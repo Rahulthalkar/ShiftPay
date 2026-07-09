@@ -18,6 +18,49 @@ namespace ShiftPay.DAL
             connectionString=Convert.ToString(configuration.GetSection("ConnectionStrings:DefaultConnection").Value);
         }
 
+        // GetAllAttendances already implemented later in file; this method was removed to avoid duplication.
+
+        public APIResult<List<AttendanceModel>> GetAttendancesByMonth(int year, int month)
+        {
+            using (var dbContext = new EmpDbEntities(connectionString))
+            {
+                var result = new APIResult<List<AttendanceModel>>();
+                try
+                {
+                    var attendances = dbContext.Attendances
+                        .Where(a => a.Date.Year == year && a.Date.Month == month)
+                        .Select(a => new AttendanceModel
+                        {
+                            AttendanceId = a.AttendanceId,
+                            UserId = a.UserId,
+                            Date = a.Date,
+                            StartTime = a.StartTime,
+                            EndTime = a.EndTime,
+                            ShiftType = (ShiftType)a.ShiftType,
+                            Salary = a.Salary,
+                            Status = a.Status,
+                            ApporveById = a.ApporveById,
+                            Latitude = a.Latitude,
+                            Longitude = a.Longitude,
+                            ClockInTime = a.ClockInTime,
+                            ClockOutTime = a.ClockOutTime
+                        }).ToList();
+
+                    result.IsSuccess = true;
+                    result.Value = attendances;
+                    result.ExceptionInfo = "Attendances retrieved successfully.";
+                }
+                catch (Exception ex)
+                {
+                    result.IsSuccess = false;
+                    result.Value = null;
+                    result.ErrorMessageKey = "ErrorRetrievingAttendances";
+                    result.ExceptionInfo = ex.Message;
+                }
+                return result;
+            }
+        }
+
         public APIResult<List<SupervisorWorkerModel>> GetAllWorkerBySupervisorId(int supervisorId)
         {
             using(var dbContext = new EmpDbEntities(connectionString))
